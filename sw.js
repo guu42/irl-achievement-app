@@ -1,4 +1,4 @@
-const CACHE_NAME = "carnet-exploits-v2"; // v2 : force le renouvellement du cache existant
+const CACHE_NAME = "carnet-exploits-v3"; // v3 : force le renouvellement du cache existant
 const ASSETS = [
   "./",
   "./index.html",
@@ -34,7 +34,6 @@ self.addEventListener("fetch", (event) => {
   }
 
   // firebase-config.js : réseau en priorité (network-first), cache en secours
-  // uniquement si le réseau est indisponible
   if (url.includes("firebase-config.js")) {
     event.respondWith(
       fetch(event.request)
@@ -48,7 +47,22 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Reste des fichiers : cache-first
+  // index.html : réseau en priorité aussi, pour que tes futures modifs
+  // apparaissent tout de suite sans jongler avec le cache à chaque fois
+  if (url.includes("index.html") || url.endsWith("/")) {
+    event.respondWith(
+      fetch(event.request)
+        .then((res) => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Reste des fichiers (icônes, manifest) : cache-first
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
