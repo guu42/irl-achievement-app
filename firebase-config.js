@@ -3,10 +3,11 @@
 // Voir README.md étape 3 pour savoir où les trouver.
 
 export const firebaseConfig = {
-  apiKey: "COLLE_TA_CLE_ICI",
-  authDomain: "TON-PROJET.firebaseapp.com",
-  projectId: "TON-PROJET",
-  storageBucket: "TON-PROJET.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "1:000000000000:web:xxxxxxxxxxxxxxxxxx"
+  apiKey: "AIzaSyDI7GB2gfdHSdvy0OAzZfeBD9jKPVOoY14",
+  authDomain: "irl-achievement-app.firebaseapp.com",
+  projectId: "irl-achievement-app",
+  storageBucket: "irl-achievement-app.firebasestorage.app",
+  messagingSenderId: "909484054114",
+  appId: "1:909484054114:web:741d879fc15ba30b01633b",
+  measurementId: "G-K6B0YEDNEC"
 };
