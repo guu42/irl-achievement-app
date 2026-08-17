@@ -1,0 +1,14 @@
+{
+  "name": "Carnet d'Exploits",
+  "short_name": "Exploits",
+  "description": "Suis tes accomplissements de la vraie vie comme des achievements de jeu vidéo",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1c2e24",
+  "theme_color": "#1c2e24",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

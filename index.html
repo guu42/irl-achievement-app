@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Carnet d'Exploits</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1c2e24">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Exploits">
+
+<style>
+:root{
+  --forest-deep: #1c2e24;
+  --forest: #26402f;
+  --canvas: #ece3cf;
+  --canvas-dark: #d9cca9;
+  --brass: #c69a3d;
+  --brass-light: #e0bb63;
+  --rust: #b1502c;
+  --ink: #13190f;
+  --teal: #3f5c50;
+  --white-ish: #f6f1e4;
+  --font-display: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-body: 'Georgia', 'Iowan Old Style', serif;
+  --font-mono: 'Courier New', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body{
+  background: var(--forest-deep);
+  color: var(--white-ish);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding: 0 0 60px 0;
+}
+
+/* ===== AUTH SCREEN ===== */
+.auth-screen{
+  min-height: 100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding: 24px;
+}
+.auth-box{
+  width:100%; max-width: 360px;
+  background: var(--forest);
+  border: 2px dashed var(--brass);
+  border-radius: 10px;
+  padding: 28px 22px;
+}
+.auth-title{
+  font-family: var(--font-display);
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  text-align:center;
+}
+.auth-title span{ color: var(--brass); }
+.auth-sub{
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align:center;
+  color: rgba(246,241,228,0.6);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.auth-box input{
+  width:100%;
+  background: var(--canvas);
+  border:none;
+  border-radius:4px;
+  padding:12px 14px;
+  font-family: var(--font-body);
+  font-size:14px;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.auth-box button{
+  width:100%;
+  background: var(--brass);
+  color: var(--ink);
+  border:none;
+  font-family: var(--font-display);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  font-weight:700;
+  font-size:13px;
+  padding:12px;
+  border-radius:4px;
+  cursor:pointer;
+  margin-top: 4px;
+}
+.auth-box button:hover{ background: var(--brass-light); }
+.auth-switch{
+  text-align:center;
+  margin-top:14px;
+  font-size:12px;
+  color: rgba(246,241,228,0.6);
+}
+.auth-switch a{ color: var(--brass-light); cursor:pointer; text-decoration: underline; }
+.auth-error{
+  color: var(--rust);
+  font-size: 12px;
+  margin-bottom: 10px;
+  min-height: 14px;
+  font-family: var(--font-mono);
+}
+
+/* ===== APP (identique à la version précédente) ===== */
+#app{ display:none; }
+.header{
+  background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%);
+  border-bottom: 3px solid var(--brass);
+  padding: 28px 20px 22px;
+  position: relative;
+}
+.header::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:-6px; height:3px;
+  background: repeating-linear-gradient(90deg, var(--brass) 0 8px, transparent 8px 16px);
+  opacity:0.5;
+}
+.top-row{ display:flex; justify-content:space-between; align-items:flex-start; }
+.eyebrow{
+  font-family: var(--font-mono);
+  letter-spacing: 3px;
+  font-size: 11px;
+  color: var(--brass-light);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.title{
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--white-ish);
+}
+.title span{ color: var(--brass); }
+.logout-btn{
+  background: none;
+  border: 1px solid rgba(198,154,61,0.5);
+  color: rgba(246,241,228,0.7);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
+.rank-bar{ margin-top: 18px; display:flex; align-items:center; gap: 14px; }
+.rank-badge{
+  width: 54px; height: 54px; border-radius: 50%;
+  border: 2px solid var(--brass); display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-display); font-size: 20px; font-weight:700;
+  background: radial-gradient(circle at 35% 30%, var(--teal), var(--forest-deep));
+  flex-shrink:0;
+}
+.rank-info{ flex:1; }
+.rank-name{ font-family: var(--font-display); font-size: 15px; letter-spacing: 1px; text-transform: uppercase; color: var(--brass-light); }
+.xp-track{ margin-top: 6px; height: 8px; background: rgba(0,0,0,0.35); border-radius: 4px; overflow:hidden; border: 1px solid rgba(198,154,61,0.4); }
+.xp-fill{ height:100%; background: linear-gradient(90deg, var(--rust), var(--brass)); width: 0%; transition: width 0.6s ease; }
+.xp-label{ font-family: var(--font-mono); font-size: 10px; color: rgba(246,241,228,0.6); margin-top: 4px; }
+
+.streak-row{ margin-top: 16px; display:flex; gap: 10px; align-items:center; }
+.checkin-btn{
+  background: var(--brass); color: var(--ink); border: none;
+  font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-size: 13px; font-weight: 700;
+  padding: 10px 18px; border-radius: 3px; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease;
+}
+.checkin-btn:hover{ background: var(--brass-light); }
+.checkin-btn:active{ transform: scale(0.96); }
+.checkin-btn:disabled{ background: rgba(198,154,61,0.25); color: rgba(246,241,228,0.4); cursor:default; }
+.streak-count{ font-family: var(--font-mono); font-size: 12px; color: var(--brass-light); }
+
+.categories{ display:flex; gap: 8px; overflow-x: auto; padding: 16px 20px 4px; scrollbar-width: none; }
+.categories::-webkit-scrollbar{ display:none; }
+.cat-chip{
+  flex-shrink:0; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+  padding: 7px 14px; border-radius: 20px; border: 1px solid rgba(198,154,61,0.4); color: rgba(246,241,228,0.7);
+  cursor: pointer; background: transparent; white-space: nowrap; transition: all 0.15s ease;
+}
+.cat-chip.active{ background: var(--brass); color: var(--ink); border-color: var(--brass); font-weight: 700; }
+
+.section-label{ font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(246,241,228,0.5); padding: 18px 20px 8px; }
+
+.badge-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; padding: 0 20px; }
+.badge-card{
+  background: var(--canvas); border-radius: 6px; padding: 16px 12px 14px; position: relative; cursor: pointer;
+  border: 2px dashed transparent; transition: transform 0.15s ease, box-shadow 0.15s ease; color: var(--ink);
+}
+.badge-card:hover{ transform: translateY(-2px); }
+.badge-card.locked{ background: rgba(236,227,207,0.08); color: rgba(246,241,228,0.45); }
+.badge-card.locked .patch-icon{ filter: grayscale(1) opacity(0.35); }
+.badge-card.unlocked{ box-shadow: 0 3px 0 var(--rust), 0 6px 14px rgba(0,0,0,0.35); border: 2px dashed var(--rust); }
+
+.tier-tag{ position:absolute; top:8px; right:8px; font-family: var(--font-mono); font-size: 9px; letter-spacing:1px; text-transform:uppercase; padding: 2px 6px; border-radius: 3px; color: var(--white-ish); }
+.tier-bronze{ background: #8a5a34; }
+.tier-argent{ background: #7c8896; }
+.tier-or{ background: var(--rust); }
+
+.patch-icon{
+  width: 46px; height: 46px; border-radius: 50%; display:flex; align-items:center; justify-content:center;
+  font-size: 22px; margin-bottom: 10px; background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass)); border: 2px solid var(--ink);
+}
+.badge-card.locked .patch-icon{ background: rgba(0,0,0,0.15); border-color: rgba(0,0,0,0.2); }
+
+.badge-name{ font-family: var(--font-display); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; margin-bottom: 4px; }
+.badge-desc{ font-size: 12px; line-height: 1.35; opacity: 0.85; }
+.badge-xp{ font-family: var(--font-mono); font-size: 10px; margin-top: 8px; color: var(--rust); font-weight:bold; }
+.badge-card.locked .badge-xp{ color: rgba(246,241,228,0.4); }
+
+.add-section{ padding: 20px; }
+.add-form{ background: rgba(236,227,207,0.06); border: 1px dashed rgba(198,154,61,0.5); border-radius: 6px; padding: 16px; }
+.add-form input{ width: 100%; background: var(--canvas); border: none; border-radius: 3px; padding: 10px 12px; font-family: var(--font-body); font-size: 13px; color: var(--ink); margin-bottom: 8px; }
+.add-form select{ width:100%; background: var(--canvas); border:none; border-radius:3px; padding:10px 12px; font-family: var(--font-body); font-size:13px; color: var(--ink); margin-bottom: 10px; }
+.add-form button{ background: var(--teal); color: var(--white-ish); border: none; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-size: 12px; font-weight: 700; padding: 10px 16px; border-radius: 3px; cursor: pointer; width: 100%; }
+.add-form button:hover{ background: #4d7062; }
+
+.toast{
+  position: fixed; bottom: -120px; left: 50%; transform: translateX(-50%);
+  background: var(--canvas); color: var(--ink); padding: 14px 20px; border-radius: 8px; border: 2px dashed var(--rust);
+  display:flex; align-items:center; gap: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  transition: bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 100; max-width: 90vw;
+}
+.toast.show{ bottom: 24px; }
+.toast-icon{ width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass)); display:flex; align-items:center; justify-content:center; font-size: 18px; border: 2px solid var(--ink); flex-shrink:0; }
+.toast-text{ font-family: var(--font-display); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
+.toast-text b{ display:block; font-size:14px; }
+
+.loading{ text-align:center; padding: 60px 20px; color: rgba(246,241,228,0.5); font-family: var(--font-mono); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ===== ÉCRAN DE CONNEXION ===== -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-box">
+    <div class="auth-title">CARNET D'<span>EXPLOITS</span></div>
+    <div class="auth-sub" id="authSubtitle">Connexion</div>
+    <div class="auth-error" id="authError"></div>
+    <input type="email" id="authEmail" placeholder="Email">
+    <input type="password" id="authPassword" placeholder="Mot de passe">
+    <button id="authSubmitBtn">Se connecter</button>
+    <div class="auth-switch">
+      <span id="authSwitchText">Pas encore de compte ?</span>
+      <a id="authSwitchLink">Créer un compte</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+  <div class="header">
+    <div class="top-row">
+      <div>
+        <div class="eyebrow">Carnet de terrain — édition personnelle</div>
+        <div class="title">MES <span>EXPLOITS</span></div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Déconnexion</button>
+    </div>
+
+    <div class="rank-bar">
+      <div class="rank-badge" id="rankBadge">I</div>
+      <div class="rank-info">
+        <div class="rank-name" id="rankName">Novice de terrain</div>
+        <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+        <div class="xp-label" id="xpLabel">0 / 100 XP</div>
+      </div>
+    </div>
+
+    <div class="streak-row">
+      <button class="checkin-btn" id="checkinBtn">Pointer aujourd'hui</button>
+      <div class="streak-count" id="streakLabel">0 jour de suite</div>
+    </div>
+  </div>
+
+  <div class="categories" id="categories"></div>
+  <div class="section-label">Badges à débloquer</div>
+  <div class="badge-grid" id="badgeGrid">
+    <div class="loading">Ouverture du carnet…</div>
+  </div>
+
+  <div class="add-section">
+    <div class="section-label" style="padding:0 0 10px;">Ajouter un exploit perso</div>
+    <div class="add-form">
+      <input type="text" id="newTitle" placeholder="Nom de l'exploit (ex: Premier 10km)">
+      <input type="text" id="newDesc" placeholder="Description courte">
+      <select id="newTier">
+        <option value="bronze">Bronze — 20 XP</option>
+        <option value="argent">Argent — 50 XP</option>
+        <option value="or">Or — 100 XP</option>
+      </select>
+      <button id="addBtn">Créer le badge</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">🏅</div>
+  <div class="toast-text">Badge débloqué<b id="toastName"></b></div>
+</div>
+
+<!-- ===== FIREBASE ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const TIER_XP = { bronze: 20, argent: 50, or: 100 };
+const RANKS = [
+  {name:"Novice de terrain", min:0},
+  {name:"Éclaireur", min:150},
+  {name:"Arpenteur", min:350},
+  {name:"Vétéran", min:650},
+  {name:"Maître explorateur", min:1000},
+  {name:"Légende du carnet", min:1500},
+];
+const DEFAULT_BADGES = [
+  {id:"d1", cat:"Santé", icon:"🌅", name:"Lève-tôt", desc:"Debout avant 7h, 5 jours de suite", tier:"argent", unlocked:false},
+  {id:"d2", cat:"Santé", icon:"🏃", name:"Premier 10km", desc:"Courir 10 kilomètres d'une traite", tier:"or", unlocked:false},
+  {id:"d3", cat:"Santé", icon:"💧", name:"Bien hydraté", desc:"2L d'eau par jour pendant une semaine", tier:"bronze", unlocked:false},
+  {id:"d4", cat:"Santé", icon:"😴", name:"Nuit complète", desc:"8h de sommeil, 7 nuits de suite", tier:"argent", unlocked:false},
+  {id:"d5", cat:"Discipline", icon:"🎯", name:"Zéro procrastination", desc:"Finir la tâche prioritaire 5 jours de suite", tier:"argent", unlocked:false},
+  {id:"d6", cat:"Discipline", icon:"🧹", name:"Grand rangement", desc:"Désencombrer complètement une pièce", tier:"bronze", unlocked:false},
+  {id:"d7", cat:"Discipline", icon:"📵", name:"Jeûne numérique", desc:"Une journée complète sans réseaux sociaux", tier:"bronze", unlocked:false},
+  {id:"d8", cat:"Social", icon:"📞", name:"Renouer le lien", desc:"Appeler un vieil ami perdu de vue", tier:"bronze", unlocked:false},
+  {id:"d9", cat:"Social", icon:"🙏", name:"Merci sincère", desc:"Remercier quelqu'un en personne pour son aide", tier:"bronze", unlocked:false},
+  {id:"d10", cat:"Social", icon:"🤝", name:"Nouvelle connexion", desc:"Rencontrer et échanger avec une personne inconnue", tier:"argent", unlocked:false},
+  {id:"d11", cat:"Apprentissage", icon:"📚", name:"Dévoreur de livres", desc:"Terminer un livre du début à la fin", tier:"argent", unlocked:false},
+  {id:"d12", cat:"Apprentissage", icon:"🗣️", name:"Nouvelle langue", desc:"30 jours d'apprentissage d'une langue", tier:"or", unlocked:false},
+  {id:"d13", cat:"Apprentissage", icon:"🎓", name:"Certifié", desc:"Terminer un cours en ligne jusqu'au bout", tier:"or", unlocked:false},
+  {id:"d14", cat:"Aventure", icon:"🗺️", name:"Explorateur urbain", desc:"Visiter un quartier jamais exploré", tier:"bronze", unlocked:false},
+  {id:"d15", cat:"Aventure", icon:"🎢", name:"Grand saut", desc:"Essayer une activité qui te fait peur", tier:"argent", unlocked:false},
+  {id:"d16", cat:"Aventure", icon:"✈️", name:"Nouveau territoire", desc:"Visiter une ville ou un pays inconnu", tier:"or", unlocked:false},
+];
+
+let state = { badges: [], xp: 0, streak: 0, lastCheckin: null };
+let activeCat = "Tout";
+let currentUser = null;
+let isSignup = false;
+
+/* ---------- AUTH UI ---------- */
+const authScreen = document.getElementById('authScreen');
+const appEl = document.getElementById('app');
+const authError = document.getElementById('authError');
+
+document.getElementById('authSwitchLink').addEventListener('click', () => {
+  isSignup = !isSignup;
+  document.getElementById('authSubtitle').textContent = isSignup ? "Créer un compte" : "Connexion";
+  document.getElementById('authSubmitBtn').textContent = isSignup ? "Créer le compte" : "Se connecter";
+  document.getElementById('authSwitchText').textContent = isSignup ? "Déjà un compte ?" : "Pas encore de compte ?";
+  document.getElementById('authSwitchLink').textContent = isSignup ? "Se connecter" : "Créer un compte";
+  authError.textContent = "";
+});
+
+document.getElementById('authSubmitBtn').addEventListener('click', async () => {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  authError.textContent = "";
+  if(!email || !password){ authError.textContent = "Remplis email et mot de passe."; return; }
+  try{
+    if(isSignup){
+      await createUserWithEmailAndPassword(auth, email, password);
+    } else {
+      await signInWithEmailAndPassword(auth, email, password);
+    }
+  }catch(e){
+    authError.textContent = translateAuthError(e.code);
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+function translateAuthError(code){
+  const map = {
+    'auth/email-already-in-use': "Un compte existe déjà avec cet email.",
+    'auth/invalid-email': "Email invalide.",
+    'auth/weak-password': "Mot de passe trop court (6 caractères min).",
+    'auth/user-not-found': "Aucun compte avec cet email.",
+    'auth/wrong-password': "Mot de passe incorrect.",
+    'auth/invalid-credential': "Email ou mot de passe incorrect.",
+  };
+  return map[code] || "Une erreur est survenue. Réessaie.";
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUser = user;
+    authScreen.style.display = 'none';
+    appEl.style.display = 'block';
+    await loadState();
+  } else {
+    currentUser = null;
+    authScreen.style.display = 'flex';
+    appEl.style.display = 'none';
+  }
+});
+
+/* ---------- DATA (Firestore) ---------- */
+async function loadState(){
+  const ref = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  if(snap.exists()){
+    const data = snap.data();
+    state.badges = data.badges || DEFAULT_BADGES;
+    state.xp = data.xp || 0;
+    state.streak = data.streak || 0;
+    state.lastCheckin = data.lastCheckin || null;
+  } else {
+    state.badges = DEFAULT_BADGES;
+    state.xp = 0; state.streak = 0; state.lastCheckin = null;
+    await saveAll();
+  }
+  render();
+}
+
+async function saveAll(){
+  const ref = doc(db, "users", currentUser.uid);
+  await setDoc(ref, {
+    badges: state.badges,
+    xp: state.xp,
+    streak: state.streak,
+    lastCheckin: state.lastCheckin
+  });
+}
+
+/* ---------- RENDER (identique à la version précédente) ---------- */
+function getRank(xp){
+  let current = RANKS[0]; let next = RANKS[1];
+  for(let i=0;i<RANKS.length;i++){
+    if(xp >= RANKS[i].min){ current = RANKS[i]; next = RANKS[i+1] || null; }
+  }
+  return {current, next};
+}
+function renderHeader(){
+  const {current, next} = getRank(state.xp);
+  document.getElementById('rankName').textContent = current.name;
+  document.getElementById('rankBadge').textContent = (RANKS.indexOf(current)+1);
+  if(next){
+    const span = next.min - current.min;
+    const progress = state.xp - current.min;
+    document.getElementById('xpFill').style.width = Math.min(100, (progress/span)*100) + '%';
+    document.getElementById('xpLabel').textContent = `${state.xp} / ${next.min} XP`;
+  } else {
+    document.getElementById('xpFill').style.width = '100%';
+    document.getElementById('xpLabel').textContent = `${state.xp} XP — rang maximum`;
+  }
+  document.getElementById('streakLabel').textContent =
+    state.streak === 0 ? "0 jour de suite" : state.streak === 1 ? "1 jour de suite" : `${state.streak} jours de suite`;
+  const today = new Date().toDateString();
+  const btn = document.getElementById('checkinBtn');
+  if(state.lastCheckin === today){ btn.disabled = true; btn.textContent = "Déjà pointé aujourd'hui"; }
+  else { btn.disabled = false; btn.textContent = "Pointer aujourd'hui"; }
+}
+function renderCategories(){
+  const cats = ["Tout", ...new Set(state.badges.map(b=>b.cat))];
+  const el = document.getElementById('categories');
+  el.innerHTML = cats.map(c => `<button class="cat-chip ${c===activeCat?'active':''}" data-cat="${c}">${c}</button>`).join('');
+  el.querySelectorAll('.cat-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{ activeCat = chip.dataset.cat; render(); });
+  });
+}
+function renderBadges(){
+  const grid = document.getElementById('badgeGrid');
+  const list = activeCat === "Tout" ? state.badges : state.badges.filter(b=>b.cat===activeCat);
+  grid.innerHTML = list.map(b => `
+    <div class="badge-card ${b.unlocked ? 'unlocked':'locked'}" data-id="${b.id}">
+      <div class="tier-tag tier-${b.tier}">${b.tier}</div>
+      <div class="patch-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+      <div class="badge-xp">${b.unlocked ? '✓ débloqué' : '+' + TIER_XP[b.tier] + ' XP'}</div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.badge-card').forEach(card=>{
+    card.addEventListener('click', ()=> toggleBadge(card.dataset.id));
+  });
+}
+function render(){ renderHeader(); renderCategories(); renderBadges(); }
+
+async function toggleBadge(id){
+  const badge = state.badges.find(b=>b.id===id);
+  if(!badge) return;
+  if(badge.unlocked){
+    badge.unlocked = false;
+    state.xp = Math.max(0, state.xp - TIER_XP[badge.tier]);
+  } else {
+    badge.unlocked = true;
+    state.xp += TIER_XP[badge.tier];
+    showToast(badge);
+  }
+  render();
+  await saveAll();
+}
+function showToast(badge){
+  const toast = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = badge.icon;
+  document.getElementById('toastName').textContent = badge.name;
+  toast.classList.add('show');
+  setTimeout(()=> toast.classList.remove('show'), 2600);
+}
+
+document.getElementById('checkinBtn').addEventListener('click', async ()=>{
+  const today = new Date().toDateString();
+  if(state.lastCheckin === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  state.streak = (state.lastCheckin === yesterday) ? state.streak + 1 : 1;
+  state.lastCheckin = today;
+  state.xp += 5;
+  render();
+  await saveAll();
+});
+
+document.getElementById('addBtn').addEventListener('click', async ()=>{
+  const title = document.getElementById('newTitle').value.trim();
+  const desc = document.getElementById('newDesc').value.trim();
+  const tier = document.getElementById('newTier').value;
+  if(!title){ return; }
+  state.badges.push({ id: 'custom-' + Date.now(), cat: "Perso", icon: "⭐", name: title, desc: desc || "Exploit personnel", tier, unlocked: false });
+  document.getElementById('newTitle').value = '';
+  document.getElementById('newDesc').value = '';
+  render();
+  await saveAll();
+});
+
+/* ---------- Service worker (installabilité + offline) ---------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+}
+</script>
+
+</body>
+</html>
