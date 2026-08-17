@@ -9,6 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1c2e24">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Exploits">
@@ -114,7 +115,7 @@ body{
   font-family: var(--font-mono);
 }
 
-/* ===== APP (identique à la version précédente) ===== */
+/* ===== APP ===== */
 #app{ display:none; }
 .header{
   background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%);
@@ -185,6 +186,24 @@ body{
 .checkin-btn:disabled{ background: rgba(198,154,61,0.25); color: rgba(246,241,228,0.4); cursor:default; }
 .streak-count{ font-family: var(--font-mono); font-size: 12px; color: var(--brass-light); }
 
+.new-achievement-bar{ padding: 16px 20px 0; }
+.new-achievement-btn{
+  width:100%;
+  background: var(--rust);
+  color: var(--white-ish);
+  border:none;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight:700;
+  font-size: 14px;
+  padding: 13px;
+  border-radius: 6px;
+  cursor:pointer;
+  border: 2px dashed rgba(246,241,228,0.4);
+}
+.new-achievement-btn:hover{ background: #c65f38; }
+
 .categories{ display:flex; gap: 8px; overflow-x: auto; padding: 16px 20px 4px; scrollbar-width: none; }
 .categories::-webkit-scrollbar{ display:none; }
 .cat-chip{
@@ -206,28 +225,26 @@ body{
 .badge-card.locked .patch-icon{ filter: grayscale(1) opacity(0.35); }
 .badge-card.unlocked{ box-shadow: 0 3px 0 var(--rust), 0 6px 14px rgba(0,0,0,0.35); border: 2px dashed var(--rust); }
 
-.tier-tag{ position:absolute; top:8px; right:8px; font-family: var(--font-mono); font-size: 9px; letter-spacing:1px; text-transform:uppercase; padding: 2px 6px; border-radius: 3px; color: var(--white-ish); }
-.tier-bronze{ background: #8a5a34; }
-.tier-argent{ background: #7c8896; }
-.tier-or{ background: var(--rust); }
+.tier-tag{ position:absolute; top:8px; right:8px; font-family: var(--font-mono); font-size: 9px; letter-spacing:1px; text-transform:uppercase; padding: 2px 6px; border-radius: 3px; color: var(--white-ish); background: var(--teal); }
 
 .patch-icon{
   width: 46px; height: 46px; border-radius: 50%; display:flex; align-items:center; justify-content:center;
   font-size: 22px; margin-bottom: 10px; background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass)); border: 2px solid var(--ink);
+  position:relative;
 }
 .badge-card.locked .patch-icon{ background: rgba(0,0,0,0.15); border-color: rgba(0,0,0,0.2); }
+.check-overlay{
+  position:absolute; bottom:-4px; right:-4px;
+  background: var(--forest); border-radius:50%; width:18px; height:18px;
+  display:flex; align-items:center; justify-content:center; font-size:11px;
+  border: 2px solid var(--canvas);
+}
 
 .badge-name{ font-family: var(--font-display); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; margin-bottom: 4px; }
 .badge-desc{ font-size: 12px; line-height: 1.35; opacity: 0.85; }
-.badge-xp{ font-family: var(--font-mono); font-size: 10px; margin-top: 8px; color: var(--rust); font-weight:bold; }
-.badge-card.locked .badge-xp{ color: rgba(246,241,228,0.4); }
-
-.add-section{ padding: 20px; }
-.add-form{ background: rgba(236,227,207,0.06); border: 1px dashed rgba(198,154,61,0.5); border-radius: 6px; padding: 16px; }
-.add-form input{ width: 100%; background: var(--canvas); border: none; border-radius: 3px; padding: 10px 12px; font-family: var(--font-body); font-size: 13px; color: var(--ink); margin-bottom: 8px; }
-.add-form select{ width:100%; background: var(--canvas); border:none; border-radius:3px; padding:10px 12px; font-family: var(--font-body); font-size:13px; color: var(--ink); margin-bottom: 10px; }
-.add-form button{ background: var(--teal); color: var(--white-ish); border: none; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-size: 12px; font-weight: 700; padding: 10px 16px; border-radius: 3px; cursor: pointer; width: 100%; }
-.add-form button:hover{ background: #4d7062; }
+.badge-meta{ font-family: var(--font-mono); font-size: 10px; margin-top: 8px; color: var(--rust); font-weight:bold; }
+.badge-card.locked .badge-meta{ color: rgba(246,241,228,0.4); }
+.badge-date{ font-family: var(--font-mono); font-size: 10px; margin-top: 3px; opacity:0.6; }
 
 .toast{
   position: fixed; bottom: -120px; left: 50%; transform: translateX(-50%);
@@ -241,6 +258,115 @@ body{
 .toast-text b{ display:block; font-size:14px; }
 
 .loading{ text-align:center; padding: 60px 20px; color: rgba(246,241,228,0.5); font-family: var(--font-mono); font-size: 12px; }
+
+/* ===== MODALS ===== */
+.modal-overlay{
+  display:none;
+  position:fixed; inset:0;
+  background: rgba(0,0,0,0.65);
+  z-index: 200;
+  align-items:flex-end;
+  justify-content:center;
+}
+.modal-overlay.show{ display:flex; }
+.modal-box{
+  background: var(--canvas);
+  color: var(--ink);
+  width:100%;
+  max-width: 460px;
+  max-height: 88vh;
+  overflow-y:auto;
+  border-radius: 14px 14px 0 0;
+  padding: 22px 20px 28px;
+}
+@media (min-width: 500px){
+  .modal-overlay{ align-items:center; }
+  .modal-box{ border-radius: 14px; }
+}
+.modal-title{
+  font-family: var(--font-display);
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+.field-label{
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--teal);
+  margin-bottom: 5px;
+  margin-top: 14px;
+  display:block;
+}
+.modal-box input[type="text"], .modal-box input[type="date"], .modal-box select, .modal-box textarea{
+  width:100%;
+  background: var(--white-ish);
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+}
+.emoji-quickpicks{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.emoji-quickpicks button{
+  background: var(--white-ish);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 6px;
+  font-size: 18px;
+  padding: 6px 9px;
+  cursor:pointer;
+}
+.emoji-quickpicks button:hover{ background: var(--canvas-dark); }
+
+.type-toggle{ display:flex; gap:8px; margin-top: 6px; }
+.type-toggle label{
+  flex:1;
+  text-align:center;
+  padding: 10px 6px;
+  border-radius: 6px;
+  border: 2px solid rgba(0,0,0,0.15);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor:pointer;
+}
+.type-toggle input{ display:none; }
+.type-toggle input:checked + span{ font-weight:bold; }
+.type-toggle label.active{ border-color: var(--rust); background: rgba(177,80,44,0.1); }
+
+.tier-row{
+  display:flex; align-items:center; gap:10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.tier-row .tier-icon{ font-size:20px; width:26px; text-align:center; }
+.tier-row .tier-label{ flex:1; font-family: var(--font-display); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
+.tier-row input[type="date"]{ width: 140px; }
+
+.unique-unlock-row{ display:flex; align-items:center; gap:10px; margin-top:10px; }
+.unique-unlock-row label{ font-family: var(--font-mono); font-size:11px; text-transform:uppercase; }
+
+.modal-actions{ display:flex; gap:10px; margin-top: 22px; }
+.modal-actions button{
+  flex:1;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight:700;
+  font-size: 13px;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  cursor:pointer;
+}
+.btn-primary{ background: var(--brass); color: var(--ink); }
+.btn-primary:hover{ background: var(--brass-light); }
+.btn-secondary{ background: transparent; color: var(--ink); border: 1px solid rgba(0,0,0,0.25) !important; }
+.btn-danger{ background: none; color: var(--rust); text-decoration: underline; font-size: 12px; margin-top: 14px; text-align:center; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -287,30 +413,89 @@ body{
     </div>
   </div>
 
-  <div class="categories" id="categories"></div>
-  <div class="section-label">Badges à débloquer</div>
-  <div class="badge-grid" id="badgeGrid">
-    <div class="loading">Ouverture du carnet…</div>
+  <div class="new-achievement-bar">
+    <button class="new-achievement-btn" id="openCreateBtn">+ Nouvel achievement</button>
   </div>
 
-  <div class="add-section">
-    <div class="section-label" style="padding:0 0 10px;">Ajouter un exploit perso</div>
-    <div class="add-form">
-      <input type="text" id="newTitle" placeholder="Nom de l'exploit (ex: Premier 10km)">
-      <input type="text" id="newDesc" placeholder="Description courte">
-      <select id="newTier">
-        <option value="bronze">Bronze — 20 XP</option>
-        <option value="argent">Argent — 50 XP</option>
-        <option value="or">Or — 100 XP</option>
-      </select>
-      <button id="addBtn">Créer le badge</button>
-    </div>
+  <div class="categories" id="categories"></div>
+  <div class="section-label">Achievements</div>
+  <div class="badge-grid" id="badgeGrid">
+    <div class="loading">Ouverture du carnet…</div>
   </div>
 </div>
 
 <div class="toast" id="toast">
   <div class="toast-icon" id="toastIcon">🏅</div>
   <div class="toast-text">Badge débloqué<b id="toastName"></b></div>
+</div>
+
+<!-- ===== MODAL CRÉATION ===== -->
+<div class="modal-overlay" id="createOverlay">
+  <div class="modal-box">
+    <div class="modal-title">Nouvel achievement</div>
+
+    <label class="field-label">Titre</label>
+    <input type="text" id="cTitle" placeholder="Ex: Premier marathon">
+
+    <label class="field-label">Description (facultatif)</label>
+    <input type="text" id="cDesc" placeholder="Ex: Courir 42km sans s'arrêter">
+
+    <label class="field-label">Icône</label>
+    <input type="text" id="cIcon" placeholder="🏆" maxlength="4">
+    <div class="emoji-quickpicks" id="cEmojiPicks"></div>
+
+    <label class="field-label">Type</label>
+    <div class="type-toggle">
+      <label id="typeUniqueLabel"><input type="radio" name="cType" value="unique" checked><span>Déblocage unique</span></label>
+      <label id="typeTieredLabel"><input type="radio" name="cType" value="tiered"><span>À paliers</span></label>
+    </div>
+
+    <div id="tierCountBlock" style="display:none;">
+      <label class="field-label">Nombre de paliers</label>
+      <select id="cTierCount"></select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="createCancelBtn">Annuler</button>
+      <button class="btn-primary" id="createConfirmBtn">Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL ÉDITION ===== -->
+<div class="modal-overlay" id="editOverlay">
+  <div class="modal-box">
+    <div class="modal-title" id="editModalTitle">Achievement</div>
+
+    <label class="field-label">Titre</label>
+    <input type="text" id="eTitle">
+
+    <label class="field-label">Description</label>
+    <input type="text" id="eDesc">
+
+    <label class="field-label">Icône</label>
+    <input type="text" id="eIcon" maxlength="4">
+
+    <div id="editUniqueBlock" style="display:none;">
+      <div class="unique-unlock-row">
+        <input type="checkbox" id="eUnlockedCheck">
+        <label for="eUnlockedCheck">Débloqué</label>
+      </div>
+      <label class="field-label">Date de déblocage</label>
+      <input type="date" id="eUnlockedDate">
+    </div>
+
+    <div id="editTieredBlock" style="display:none;">
+      <label class="field-label">Paliers atteints (laisse vide si non atteint)</label>
+      <div id="tierRowsContainer"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="editCancelBtn">Annuler</button>
+      <button class="btn-primary" id="editSaveBtn">Enregistrer</button>
+    </div>
+    <div class="btn-danger" id="editDeleteBtn">Supprimer cet achievement</div>
+  </div>
 </div>
 
 <!-- ===== FIREBASE ===== -->
@@ -329,7 +514,23 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const TIER_XP = { bronze: 20, argent: 50, or: 100 };
+/* ---------- CONSTANTES ---------- */
+const TIER_LEVELS = [
+  {name:"Bois", icon:"🪵", xp:10},
+  {name:"Pierre", icon:"🪨", xp:15},
+  {name:"Bronze", icon:"🥉", xp:25},
+  {name:"Argent", icon:"🥈", xp:40},
+  {name:"Or", icon:"🥇", xp:60},
+  {name:"Diamant", icon:"💎", xp:90},
+  {name:"Améthyste", icon:"🟣", xp:120},
+  {name:"Émeraude", icon:"🟢", xp:150},
+  {name:"Rubis", icon:"🔴", xp:190},
+  {name:"Opale", icon:"⚪", xp:240},
+];
+const UNIQUE_CUSTOM_XP = 30;
+const OLD_TIER_XP = { bronze: 20, argent: 50, or: 100 };
+const QUICK_EMOJIS = ["🏆","🎯","🔥","💪","📚","🎨","🎵","🍕","✈️","🎮","🌱","🧘","⚽","🏃","💧","😴"];
+
 const RANKS = [
   {name:"Novice de terrain", min:0},
   {name:"Éclaireur", min:150},
@@ -338,29 +539,31 @@ const RANKS = [
   {name:"Maître explorateur", min:1000},
   {name:"Légende du carnet", min:1500},
 ];
+
 const DEFAULT_BADGES = [
-  {id:"d1", cat:"Santé", icon:"🌅", name:"Lève-tôt", desc:"Debout avant 7h, 5 jours de suite", tier:"argent", unlocked:false},
-  {id:"d2", cat:"Santé", icon:"🏃", name:"Premier 10km", desc:"Courir 10 kilomètres d'une traite", tier:"or", unlocked:false},
-  {id:"d3", cat:"Santé", icon:"💧", name:"Bien hydraté", desc:"2L d'eau par jour pendant une semaine", tier:"bronze", unlocked:false},
-  {id:"d4", cat:"Santé", icon:"😴", name:"Nuit complète", desc:"8h de sommeil, 7 nuits de suite", tier:"argent", unlocked:false},
-  {id:"d5", cat:"Discipline", icon:"🎯", name:"Zéro procrastination", desc:"Finir la tâche prioritaire 5 jours de suite", tier:"argent", unlocked:false},
-  {id:"d6", cat:"Discipline", icon:"🧹", name:"Grand rangement", desc:"Désencombrer complètement une pièce", tier:"bronze", unlocked:false},
-  {id:"d7", cat:"Discipline", icon:"📵", name:"Jeûne numérique", desc:"Une journée complète sans réseaux sociaux", tier:"bronze", unlocked:false},
-  {id:"d8", cat:"Social", icon:"📞", name:"Renouer le lien", desc:"Appeler un vieil ami perdu de vue", tier:"bronze", unlocked:false},
-  {id:"d9", cat:"Social", icon:"🙏", name:"Merci sincère", desc:"Remercier quelqu'un en personne pour son aide", tier:"bronze", unlocked:false},
-  {id:"d10", cat:"Social", icon:"🤝", name:"Nouvelle connexion", desc:"Rencontrer et échanger avec une personne inconnue", tier:"argent", unlocked:false},
-  {id:"d11", cat:"Apprentissage", icon:"📚", name:"Dévoreur de livres", desc:"Terminer un livre du début à la fin", tier:"argent", unlocked:false},
-  {id:"d12", cat:"Apprentissage", icon:"🗣️", name:"Nouvelle langue", desc:"30 jours d'apprentissage d'une langue", tier:"or", unlocked:false},
-  {id:"d13", cat:"Apprentissage", icon:"🎓", name:"Certifié", desc:"Terminer un cours en ligne jusqu'au bout", tier:"or", unlocked:false},
-  {id:"d14", cat:"Aventure", icon:"🗺️", name:"Explorateur urbain", desc:"Visiter un quartier jamais exploré", tier:"bronze", unlocked:false},
-  {id:"d15", cat:"Aventure", icon:"🎢", name:"Grand saut", desc:"Essayer une activité qui te fait peur", tier:"argent", unlocked:false},
-  {id:"d16", cat:"Aventure", icon:"✈️", name:"Nouveau territoire", desc:"Visiter une ville ou un pays inconnu", tier:"or", unlocked:false},
+  {id:"d1", cat:"Santé", icon:"🌅", name:"Lève-tôt", desc:"Debout avant 7h, 5 jours de suite", tier:"argent", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d2", cat:"Santé", icon:"🏃", name:"Premier 10km", desc:"Courir 10 kilomètres d'une traite", tier:"or", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d3", cat:"Santé", icon:"💧", name:"Bien hydraté", desc:"2L d'eau par jour pendant une semaine", tier:"bronze", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d4", cat:"Santé", icon:"😴", name:"Nuit complète", desc:"8h de sommeil, 7 nuits de suite", tier:"argent", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d5", cat:"Discipline", icon:"🎯", name:"Zéro procrastination", desc:"Finir la tâche prioritaire 5 jours de suite", tier:"argent", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d6", cat:"Discipline", icon:"🧹", name:"Grand rangement", desc:"Désencombrer complètement une pièce", tier:"bronze", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d7", cat:"Discipline", icon:"📵", name:"Jeûne numérique", desc:"Une journée complète sans réseaux sociaux", tier:"bronze", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d8", cat:"Social", icon:"📞", name:"Renouer le lien", desc:"Appeler un vieil ami perdu de vue", tier:"bronze", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d9", cat:"Social", icon:"🙏", name:"Merci sincère", desc:"Remercier quelqu'un en personne pour son aide", tier:"bronze", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d10", cat:"Social", icon:"🤝", name:"Nouvelle connexion", desc:"Rencontrer et échanger avec une personne inconnue", tier:"argent", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d11", cat:"Apprentissage", icon:"📚", name:"Dévoreur de livres", desc:"Terminer un livre du début à la fin", tier:"argent", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d12", cat:"Apprentissage", icon:"🗣️", name:"Nouvelle langue", desc:"30 jours d'apprentissage d'une langue", tier:"or", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d13", cat:"Apprentissage", icon:"🎓", name:"Certifié", desc:"Terminer un cours en ligne jusqu'au bout", tier:"or", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d14", cat:"Aventure", icon:"🗺️", name:"Explorateur urbain", desc:"Visiter un quartier jamais exploré", tier:"bronze", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d15", cat:"Aventure", icon:"🎢", name:"Grand saut", desc:"Essayer une activité qui te fait peur", tier:"argent", type:"unique", unlocked:false, unlockedDate:null},
+  {id:"d16", cat:"Aventure", icon:"✈️", name:"Nouveau territoire", desc:"Visiter une ville ou un pays inconnu", tier:"or", type:"unique", unlocked:false, unlockedDate:null},
 ];
 
-let state = { badges: [], xp: 0, streak: 0, lastCheckin: null };
+let state = { badges: [], streak: 0, lastCheckin: null };
 let activeCat = "Tout";
 let currentUser = null;
 let isSignup = false;
+let editingId = null;
 
 /* ---------- AUTH UI ---------- */
 const authScreen = document.getElementById('authScreen');
@@ -388,7 +591,7 @@ document.getElementById('authSubmitBtn').addEventListener('click', async () => {
       await signInWithEmailAndPassword(auth, email, password);
     }
   }catch(e){
-    authError.textContent = translateAuthError(e.code);
+    authError.textContent = translateAuthError(e.code) + (e.code ? "" : " (" + e.message + ")");
   }
 });
 
@@ -402,6 +605,8 @@ function translateAuthError(code){
     'auth/user-not-found': "Aucun compte avec cet email.",
     'auth/wrong-password': "Mot de passe incorrect.",
     'auth/invalid-credential': "Email ou mot de passe incorrect.",
+    'auth/unauthorized-domain': "Ce domaine n'est pas autorisé dans Firebase (Authentication > Settings > Authorized domains).",
+    'auth/configuration-not-found': "Configuration Firebase introuvable — vérifie firebase-config.js.",
   };
   return map[code] || "Une erreur est survenue. Réessaie.";
 }
@@ -425,29 +630,59 @@ async function loadState(){
   const snap = await getDoc(ref);
   if(snap.exists()){
     const data = snap.data();
-    state.badges = data.badges || DEFAULT_BADGES;
-    state.xp = data.xp || 0;
+    state.badges = migrateBadges(data.badges || DEFAULT_BADGES);
     state.streak = data.streak || 0;
     state.lastCheckin = data.lastCheckin || null;
   } else {
     state.badges = DEFAULT_BADGES;
-    state.xp = 0; state.streak = 0; state.lastCheckin = null;
+    state.streak = 0; state.lastCheckin = null;
     await saveAll();
   }
   render();
+}
+
+function migrateBadges(badges){
+  return badges.map(b => {
+    if(!b.type) b.type = "unique";
+    if(b.type === "unique" && b.unlockedDate === undefined) b.unlockedDate = null;
+    if(b.type === "tiered"){
+      if(!b.tierCount) b.tierCount = 5;
+      if(b.currentTier === undefined) b.currentTier = 0;
+      if(!b.tierDates) b.tierDates = Array(b.tierCount).fill(null);
+    }
+    return b;
+  });
 }
 
 async function saveAll(){
   const ref = doc(db, "users", currentUser.uid);
   await setDoc(ref, {
     badges: state.badges,
-    xp: state.xp,
     streak: state.streak,
     lastCheckin: state.lastCheckin
   });
 }
 
-/* ---------- RENDER (identique à la version précédente) ---------- */
+/* ---------- XP ---------- */
+function badgeXP(b){
+  if(b.type === "unique"){
+    if(!b.unlocked) return 0;
+    if(b.tier && OLD_TIER_XP[b.tier]) return OLD_TIER_XP[b.tier];
+    return UNIQUE_CUSTOM_XP;
+  }
+  if(b.type === "tiered"){
+    let total = 0;
+    for(let i=0; i<b.currentTier; i++){
+      total += TIER_LEVELS[i] ? TIER_LEVELS[i].xp : 0;
+    }
+    return total;
+  }
+  return 0;
+}
+function totalXP(){
+  return state.badges.reduce((sum,b) => sum + badgeXP(b), 0);
+}
+
 function getRank(xp){
   let current = RANKS[0]; let next = RANKS[1];
   for(let i=0;i<RANKS.length;i++){
@@ -455,18 +690,21 @@ function getRank(xp){
   }
   return {current, next};
 }
+
+/* ---------- RENDER ---------- */
 function renderHeader(){
-  const {current, next} = getRank(state.xp);
+  const xp = totalXP();
+  const {current, next} = getRank(xp);
   document.getElementById('rankName').textContent = current.name;
   document.getElementById('rankBadge').textContent = (RANKS.indexOf(current)+1);
   if(next){
     const span = next.min - current.min;
-    const progress = state.xp - current.min;
+    const progress = xp - current.min;
     document.getElementById('xpFill').style.width = Math.min(100, (progress/span)*100) + '%';
-    document.getElementById('xpLabel').textContent = `${state.xp} / ${next.min} XP`;
+    document.getElementById('xpLabel').textContent = `${xp} / ${next.min} XP`;
   } else {
     document.getElementById('xpFill').style.width = '100%';
-    document.getElementById('xpLabel').textContent = `${state.xp} XP — rang maximum`;
+    document.getElementById('xpLabel').textContent = `${xp} XP — rang maximum`;
   }
   document.getElementById('streakLabel').textContent =
     state.streak === 0 ? "0 jour de suite" : state.streak === 1 ? "1 jour de suite" : `${state.streak} jours de suite`;
@@ -475,6 +713,7 @@ function renderHeader(){
   if(state.lastCheckin === today){ btn.disabled = true; btn.textContent = "Déjà pointé aujourd'hui"; }
   else { btn.disabled = false; btn.textContent = "Pointer aujourd'hui"; }
 }
+
 function renderCategories(){
   const cats = ["Tout", ...new Set(state.badges.map(b=>b.cat))];
   const el = document.getElementById('categories');
@@ -483,70 +722,228 @@ function renderCategories(){
     chip.addEventListener('click', ()=>{ activeCat = chip.dataset.cat; render(); });
   });
 }
+
+function formatDate(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
 function renderBadges(){
   const grid = document.getElementById('badgeGrid');
   const list = activeCat === "Tout" ? state.badges : state.badges.filter(b=>b.cat===activeCat);
-  grid.innerHTML = list.map(b => `
-    <div class="badge-card ${b.unlocked ? 'unlocked':'locked'}" data-id="${b.id}">
-      <div class="tier-tag tier-${b.tier}">${b.tier}</div>
-      <div class="patch-icon">${b.icon}</div>
-      <div class="badge-name">${b.name}</div>
-      <div class="badge-desc">${b.desc}</div>
-      <div class="badge-xp">${b.unlocked ? '✓ débloqué' : '+' + TIER_XP[b.tier] + ' XP'}</div>
-    </div>
-  `).join('');
+  grid.innerHTML = list.map(b => {
+    if(b.type === "unique"){
+      const displayIcon = b.icon;
+      const meta = b.unlocked ? '✓ débloqué' : 'Non débloqué';
+      const dateLine = b.unlocked && b.unlockedDate ? `<div class="badge-date">${formatDate(b.unlockedDate)}</div>` : '';
+      return `
+        <div class="badge-card ${b.unlocked ? 'unlocked':'locked'}" data-id="${b.id}">
+          <div class="patch-icon">${displayIcon}${b.unlocked ? '<span class="check-overlay">✅</span>' : ''}</div>
+          <div class="badge-name">${b.name}</div>
+          <div class="badge-desc">${b.desc || ''}</div>
+          <div class="badge-meta">${meta}</div>
+          ${dateLine}
+        </div>`;
+    } else {
+      const hasTier = b.currentTier > 0;
+      const level = hasTier ? TIER_LEVELS[b.currentTier-1] : null;
+      const displayIcon = level ? level.icon : b.icon;
+      const meta = hasTier ? `${level.name} — ${b.currentTier}/${b.tierCount}` : `0/${b.tierCount} paliers`;
+      const dateVal = hasTier ? b.tierDates[b.currentTier-1] : null;
+      const dateLine = dateVal ? `<div class="badge-date">${formatDate(dateVal)}</div>` : '';
+      return `
+        <div class="badge-card ${hasTier ? 'unlocked':'locked'}" data-id="${b.id}">
+          <div class="tier-tag">${hasTier ? b.currentTier+'/'+b.tierCount : b.tierCount+' paliers'}</div>
+          <div class="patch-icon">${displayIcon}</div>
+          <div class="badge-name">${b.name}</div>
+          <div class="badge-desc">${b.desc || ''}</div>
+          <div class="badge-meta">${meta}</div>
+          ${dateLine}
+        </div>`;
+    }
+  }).join('');
   grid.querySelectorAll('.badge-card').forEach(card=>{
-    card.addEventListener('click', ()=> toggleBadge(card.dataset.id));
+    card.addEventListener('click', ()=> openEditModal(card.dataset.id));
   });
 }
+
 function render(){ renderHeader(); renderCategories(); renderBadges(); }
 
-async function toggleBadge(id){
-  const badge = state.badges.find(b=>b.id===id);
-  if(!badge) return;
-  if(badge.unlocked){
-    badge.unlocked = false;
-    state.xp = Math.max(0, state.xp - TIER_XP[badge.tier]);
-  } else {
-    badge.unlocked = true;
-    state.xp += TIER_XP[badge.tier];
-    showToast(badge);
-  }
-  render();
-  await saveAll();
-}
-function showToast(badge){
+function showToast(icon, name){
   const toast = document.getElementById('toast');
-  document.getElementById('toastIcon').textContent = badge.icon;
-  document.getElementById('toastName').textContent = badge.name;
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastName').textContent = name;
   toast.classList.add('show');
   setTimeout(()=> toast.classList.remove('show'), 2600);
 }
 
+/* ---------- CHECK-IN ---------- */
 document.getElementById('checkinBtn').addEventListener('click', async ()=>{
   const today = new Date().toDateString();
   if(state.lastCheckin === today) return;
   const yesterday = new Date(Date.now() - 86400000).toDateString();
   state.streak = (state.lastCheckin === yesterday) ? state.streak + 1 : 1;
   state.lastCheckin = today;
-  state.xp += 5;
   render();
   await saveAll();
 });
 
-document.getElementById('addBtn').addEventListener('click', async ()=>{
-  const title = document.getElementById('newTitle').value.trim();
-  const desc = document.getElementById('newDesc').value.trim();
-  const tier = document.getElementById('newTier').value;
-  if(!title){ return; }
-  state.badges.push({ id: 'custom-' + Date.now(), cat: "Perso", icon: "⭐", name: title, desc: desc || "Exploit personnel", tier, unlocked: false });
-  document.getElementById('newTitle').value = '';
-  document.getElementById('newDesc').value = '';
+/* ---------- CRÉATION ---------- */
+const createOverlay = document.getElementById('createOverlay');
+const cEmojiPicks = document.getElementById('cEmojiPicks');
+cEmojiPicks.innerHTML = QUICK_EMOJIS.map(e => `<button type="button" data-e="${e}">${e}</button>`).join('');
+cEmojiPicks.querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click', ()=> { document.getElementById('cIcon').value = btn.dataset.e; });
+});
+
+const cTierCount = document.getElementById('cTierCount');
+for(let n=2; n<=10; n++){
+  const opt = document.createElement('option');
+  opt.value = n; opt.textContent = `${n} paliers`;
+  if(n===5) opt.selected = true;
+  cTierCount.appendChild(opt);
+}
+
+function updateTypeToggleUI(){
+  const type = document.querySelector('input[name="cType"]:checked').value;
+  document.getElementById('tierCountBlock').style.display = type === 'tiered' ? 'block' : 'none';
+  document.getElementById('typeUniqueLabel').classList.toggle('active', type === 'unique');
+  document.getElementById('typeTieredLabel').classList.toggle('active', type === 'tiered');
+}
+document.querySelectorAll('input[name="cType"]').forEach(r => r.addEventListener('change', updateTypeToggleUI));
+updateTypeToggleUI();
+
+document.getElementById('openCreateBtn').addEventListener('click', ()=>{
+  document.getElementById('cTitle').value = '';
+  document.getElementById('cDesc').value = '';
+  document.getElementById('cIcon').value = '';
+  document.querySelector('input[name="cType"][value="unique"]').checked = true;
+  updateTypeToggleUI();
+  createOverlay.classList.add('show');
+});
+document.getElementById('createCancelBtn').addEventListener('click', ()=> createOverlay.classList.remove('show'));
+
+document.getElementById('createConfirmBtn').addEventListener('click', async ()=>{
+  const title = document.getElementById('cTitle').value.trim();
+  if(!title) return;
+  const desc = document.getElementById('cDesc').value.trim();
+  const icon = document.getElementById('cIcon').value.trim() || '🏆';
+  const type = document.querySelector('input[name="cType"]:checked').value;
+
+  const newBadge = {
+    id: 'custom-' + Date.now(),
+    cat: "Perso",
+    icon, name: title, desc, type
+  };
+  if(type === 'unique'){
+    newBadge.unlocked = false;
+    newBadge.unlockedDate = null;
+  } else {
+    const tierCount = parseInt(cTierCount.value, 10);
+    newBadge.tierCount = tierCount;
+    newBadge.currentTier = 0;
+    newBadge.tierDates = Array(tierCount).fill(null);
+  }
+  state.badges.push(newBadge);
+  createOverlay.classList.remove('show');
   render();
   await saveAll();
 });
 
-/* ---------- Service worker (installabilité + offline) ---------- */
+/* ---------- ÉDITION ---------- */
+const editOverlay = document.getElementById('editOverlay');
+
+function openEditModal(id){
+  const b = state.badges.find(x=>x.id===id);
+  if(!b) return;
+  editingId = id;
+  document.getElementById('editModalTitle').textContent = b.name;
+  document.getElementById('eTitle').value = b.name;
+  document.getElementById('eDesc').value = b.desc || '';
+  document.getElementById('eIcon').value = b.icon;
+
+  const uniqueBlock = document.getElementById('editUniqueBlock');
+  const tieredBlock = document.getElementById('editTieredBlock');
+
+  if(b.type === 'unique'){
+    uniqueBlock.style.display = 'block';
+    tieredBlock.style.display = 'none';
+    document.getElementById('eUnlockedCheck').checked = b.unlocked;
+    document.getElementById('eUnlockedDate').value = b.unlockedDate || new Date().toISOString().slice(0,10);
+  } else {
+    uniqueBlock.style.display = 'none';
+    tieredBlock.style.display = 'block';
+    const container = document.getElementById('tierRowsContainer');
+    container.innerHTML = '';
+    for(let i=0; i<b.tierCount; i++){
+      const level = TIER_LEVELS[i] || {name:`Palier ${i+1}`, icon:'⭐'};
+      const row = document.createElement('div');
+      row.className = 'tier-row';
+      row.innerHTML = `
+        <span class="tier-icon">${level.icon}</span>
+        <span class="tier-label">${level.name}</span>
+        <input type="date" class="tier-date-input" data-idx="${i}" value="${b.tierDates[i] || ''}">
+      `;
+      container.appendChild(row);
+    }
+  }
+  editOverlay.classList.add('show');
+}
+
+document.getElementById('editCancelBtn').addEventListener('click', ()=>{
+  editOverlay.classList.remove('show');
+  editingId = null;
+});
+
+document.getElementById('editSaveBtn').addEventListener('click', async ()=>{
+  const b = state.badges.find(x=>x.id===editingId);
+  if(!b) return;
+  const wasUnlocked = b.type === 'unique' ? b.unlocked : b.currentTier > 0;
+
+  b.name = document.getElementById('eTitle').value.trim() || b.name;
+  b.desc = document.getElementById('eDesc').value.trim();
+  b.icon = document.getElementById('eIcon').value.trim() || b.icon;
+
+  if(b.type === 'unique'){
+    b.unlocked = document.getElementById('eUnlockedCheck').checked;
+    b.unlockedDate = b.unlocked ? (document.getElementById('eUnlockedDate').value || new Date().toISOString().slice(0,10)) : null;
+    if(b.unlocked && !wasUnlocked) showToast(b.icon, b.name);
+  } else {
+    const inputs = document.querySelectorAll('.tier-date-input');
+    let newTierDates = [...b.tierDates];
+    inputs.forEach(inp=>{
+      const idx = parseInt(inp.dataset.idx, 10);
+      newTierDates[idx] = inp.value || null;
+    });
+    b.tierDates = newTierDates;
+    let highest = 0;
+    newTierDates.forEach((d, idx) => { if(d) highest = idx+1; });
+    const newTier = highest;
+    if(newTier > b.currentTier){
+      const level = TIER_LEVELS[newTier-1];
+      showToast(level ? level.icon : '⭐', `${b.name} — ${level ? level.name : ''}`);
+    }
+    b.currentTier = newTier;
+  }
+
+  editOverlay.classList.remove('show');
+  editingId = null;
+  render();
+  await saveAll();
+});
+
+document.getElementById('editDeleteBtn').addEventListener('click', async ()=>{
+  if(!editingId) return;
+  if(!confirm('Supprimer définitivement cet achievement ?')) return;
+  state.badges = state.badges.filter(b=>b.id!==editingId);
+  editOverlay.classList.remove('show');
+  editingId = null;
+  render();
+  await saveAll();
+});
+
+/* ---------- Service worker ---------- */
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
 }
