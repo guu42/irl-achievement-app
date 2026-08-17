@@ -204,7 +204,33 @@ body{
 }
 .new-achievement-btn:hover{ background: #c65f38; }
 
-.categories{ display:flex; gap: 8px; overflow-x: auto; padding: 16px 20px 4px; scrollbar-width: none; }
+.categories-row{ display:flex; align-items:center; gap:8px; padding: 16px 20px 4px; }
+.categories{ display:flex; gap: 8px; overflow-x: auto; flex:1; scrollbar-width: none; }
+.manage-cats-btn{
+  flex-shrink:0;
+  background: transparent;
+  border: 1px solid rgba(198,154,61,0.4);
+  color: var(--brass-light);
+  border-radius: 50%;
+  width: 30px; height: 30px;
+  cursor:pointer;
+  font-size: 14px;
+}
+.cat-row{
+  display:flex; align-items:center; gap:10px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.cat-row span{ flex:1; font-family: var(--font-display); font-size:13px; text-transform:uppercase; letter-spacing:0.5px; }
+.cat-row button{
+  background:none; border:none; color: var(--rust); cursor:pointer; font-size:16px;
+}
+.add-cat-row{ display:flex; gap:8px; margin-top:14px; }
+.add-cat-row input{ flex:1; }
+.add-cat-row button{
+  background: var(--teal); color:var(--white-ish); border:none; border-radius:5px; padding: 0 14px;
+  font-family: var(--font-display); text-transform:uppercase; font-size:12px; cursor:pointer;
+}
 .categories::-webkit-scrollbar{ display:none; }
 .cat-chip{
   flex-shrink:0; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
@@ -338,14 +364,14 @@ body{
 .type-toggle input:checked + span{ font-weight:bold; }
 .type-toggle label.active{ border-color: var(--rust); background: rgba(177,80,44,0.1); }
 
+.tier-row-block{ padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.08); }
 .tier-row{
   display:flex; align-items:center; gap:10px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 .tier-row .tier-icon{ font-size:20px; width:26px; text-align:center; }
 .tier-row .tier-label{ flex:1; font-family: var(--font-display); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
 .tier-row input[type="date"]{ width: 140px; }
+.tier-desc-input{ margin-top:6px; font-size:12px !important; padding:7px 10px !important; }
 
 .unique-unlock-row{ display:flex; align-items:center; gap:10px; margin-top:10px; }
 .unique-unlock-row label{ font-family: var(--font-mono); font-size:11px; text-transform:uppercase; }
@@ -417,7 +443,10 @@ body{
     <button class="new-achievement-btn" id="openCreateBtn">+ Nouvel achievement</button>
   </div>
 
-  <div class="categories" id="categories"></div>
+  <div class="categories-row">
+    <div class="categories" id="categories"></div>
+    <button class="manage-cats-btn" id="openManageCatsBtn">⚙</button>
+  </div>
   <div class="section-label">Achievements</div>
   <div class="badge-grid" id="badgeGrid">
     <div class="loading">Ouverture du carnet…</div>
@@ -443,6 +472,9 @@ body{
     <label class="field-label">Icône</label>
     <input type="text" id="cIcon" placeholder="🏆" maxlength="4">
     <div class="emoji-quickpicks" id="cEmojiPicks"></div>
+
+    <label class="field-label">Catégorie</label>
+    <select id="cCategory"></select>
 
     <label class="field-label">Type</label>
     <div class="type-toggle">
@@ -476,6 +508,9 @@ body{
     <label class="field-label">Icône</label>
     <input type="text" id="eIcon" maxlength="4">
 
+    <label class="field-label">Catégorie</label>
+    <select id="eCategory"></select>
+
     <div id="editUniqueBlock" style="display:none;">
       <div class="unique-unlock-row">
         <input type="checkbox" id="eUnlockedCheck">
@@ -495,6 +530,21 @@ body{
       <button class="btn-primary" id="editSaveBtn">Enregistrer</button>
     </div>
     <div class="btn-danger" id="editDeleteBtn">Supprimer cet achievement</div>
+  </div>
+</div>
+
+<!-- ===== MODAL CATÉGORIES ===== -->
+<div class="modal-overlay" id="manageCatsOverlay">
+  <div class="modal-box">
+    <div class="modal-title">Catégories</div>
+    <div id="catRowsContainer"></div>
+    <div class="add-cat-row">
+      <input type="text" id="newCatInput" placeholder="Nouvelle catégorie">
+      <button id="addCatBtn">Ajouter</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="closeManageCatsBtn" style="width:100%;">Fermer</button>
+    </div>
   </div>
 </div>
 
@@ -559,7 +609,8 @@ const DEFAULT_BADGES = [
   {id:"d16", cat:"Aventure", icon:"✈️", name:"Nouveau territoire", desc:"Visiter une ville ou un pays inconnu", tier:"or", type:"unique", unlocked:false, unlockedDate:null},
 ];
 
-let state = { badges: [], streak: 0, lastCheckin: null };
+const DEFAULT_CATEGORIES = ["Santé","Discipline","Social","Apprentissage","Aventure","Perso"];
+let state = { badges: [], streak: 0, lastCheckin: null, categories: [] };
 let activeCat = "Tout";
 let currentUser = null;
 let isSignup = false;
@@ -633,11 +684,18 @@ async function loadState(){
     state.badges = migrateBadges(data.badges || DEFAULT_BADGES);
     state.streak = data.streak || 0;
     state.lastCheckin = data.lastCheckin || null;
+    state.categories = data.categories && data.categories.length
+      ? data.categories
+      : Array.from(new Set(state.badges.map(b=>b.cat)));
   } else {
     state.badges = DEFAULT_BADGES;
     state.streak = 0; state.lastCheckin = null;
+    state.categories = [...DEFAULT_CATEGORIES];
     await saveAll();
   }
+  // s'assure que toute catégorie utilisée par un badge existe dans la liste
+  state.badges.forEach(b => { if(!state.categories.includes(b.cat)) state.categories.push(b.cat); });
+  if(!state.categories.includes("Perso")) state.categories.push("Perso");
   render();
 }
 
@@ -649,7 +707,9 @@ function migrateBadges(badges){
       if(!b.tierCount) b.tierCount = 5;
       if(b.currentTier === undefined) b.currentTier = 0;
       if(!b.tierDates) b.tierDates = Array(b.tierCount).fill(null);
+      if(!b.tierDescs) b.tierDescs = Array(b.tierCount).fill('');
     }
+    if(!b.cat) b.cat = "Perso";
     return b;
   });
 }
@@ -659,7 +719,8 @@ async function saveAll(){
   await setDoc(ref, {
     badges: state.badges,
     streak: state.streak,
-    lastCheckin: state.lastCheckin
+    lastCheckin: state.lastCheckin,
+    categories: state.categories
   });
 }
 
@@ -715,7 +776,7 @@ function renderHeader(){
 }
 
 function renderCategories(){
-  const cats = ["Tout", ...new Set(state.badges.map(b=>b.cat))];
+  const cats = ["Tout", ...state.categories];
   const el = document.getElementById('categories');
   el.innerHTML = cats.map(c => `<button class="cat-chip ${c===activeCat?'active':''}" data-cat="${c}">${c}</button>`).join('');
   el.querySelectorAll('.cat-chip').forEach(chip=>{
@@ -752,6 +813,8 @@ function renderBadges(){
       const meta = hasTier ? `${level.name} — ${b.currentTier}/${b.tierCount}` : `0/${b.tierCount} paliers`;
       const dateVal = hasTier ? b.tierDates[b.currentTier-1] : null;
       const dateLine = dateVal ? `<div class="badge-date">${formatDate(dateVal)}</div>` : '';
+      const tierDescVal = hasTier && b.tierDescs ? b.tierDescs[b.currentTier-1] : '';
+      const tierDescLine = tierDescVal ? `<div class="badge-desc">${tierDescVal}</div>` : '';
       return `
         <div class="badge-card ${hasTier ? 'unlocked':'locked'}" data-id="${b.id}">
           <div class="tier-tag">${hasTier ? b.currentTier+'/'+b.tierCount : b.tierCount+' paliers'}</div>
@@ -759,6 +822,7 @@ function renderBadges(){
           <div class="badge-name">${b.name}</div>
           <div class="badge-desc">${b.desc || ''}</div>
           <div class="badge-meta">${meta}</div>
+          ${tierDescLine}
           ${dateLine}
         </div>`;
     }
@@ -814,10 +878,16 @@ function updateTypeToggleUI(){
 document.querySelectorAll('input[name="cType"]').forEach(r => r.addEventListener('change', updateTypeToggleUI));
 updateTypeToggleUI();
 
+function populateCategorySelect(selectEl, preselect){
+  selectEl.innerHTML = state.categories.map(c => `<option value="${c}">${c}</option>`).join('');
+  if(preselect && state.categories.includes(preselect)) selectEl.value = preselect;
+}
+
 document.getElementById('openCreateBtn').addEventListener('click', ()=>{
   document.getElementById('cTitle').value = '';
   document.getElementById('cDesc').value = '';
   document.getElementById('cIcon').value = '';
+  populateCategorySelect(document.getElementById('cCategory'), 'Perso');
   document.querySelector('input[name="cType"][value="unique"]').checked = true;
   updateTypeToggleUI();
   createOverlay.classList.add('show');
@@ -833,7 +903,7 @@ document.getElementById('createConfirmBtn').addEventListener('click', async ()=>
 
   const newBadge = {
     id: 'custom-' + Date.now(),
-    cat: "Perso",
+    cat: document.getElementById('cCategory').value || "Perso",
     icon, name: title, desc, type
   };
   if(type === 'unique'){
@@ -844,6 +914,7 @@ document.getElementById('createConfirmBtn').addEventListener('click', async ()=>
     newBadge.tierCount = tierCount;
     newBadge.currentTier = 0;
     newBadge.tierDates = Array(tierCount).fill(null);
+    newBadge.tierDescs = Array(tierCount).fill('');
   }
   state.badges.push(newBadge);
   createOverlay.classList.remove('show');
@@ -862,6 +933,7 @@ function openEditModal(id){
   document.getElementById('eTitle').value = b.name;
   document.getElementById('eDesc').value = b.desc || '';
   document.getElementById('eIcon').value = b.icon;
+  populateCategorySelect(document.getElementById('eCategory'), b.cat);
 
   const uniqueBlock = document.getElementById('editUniqueBlock');
   const tieredBlock = document.getElementById('editTieredBlock');
@@ -870,7 +942,7 @@ function openEditModal(id){
     uniqueBlock.style.display = 'block';
     tieredBlock.style.display = 'none';
     document.getElementById('eUnlockedCheck').checked = b.unlocked;
-    document.getElementById('eUnlockedDate').value = b.unlockedDate || new Date().toISOString().slice(0,10);
+    document.getElementById('eUnlockedDate').value = b.unlockedDate || '';
   } else {
     uniqueBlock.style.display = 'none';
     tieredBlock.style.display = 'block';
@@ -879,11 +951,14 @@ function openEditModal(id){
     for(let i=0; i<b.tierCount; i++){
       const level = TIER_LEVELS[i] || {name:`Palier ${i+1}`, icon:'⭐'};
       const row = document.createElement('div');
-      row.className = 'tier-row';
+      row.className = 'tier-row-block';
       row.innerHTML = `
-        <span class="tier-icon">${level.icon}</span>
-        <span class="tier-label">${level.name}</span>
-        <input type="date" class="tier-date-input" data-idx="${i}" value="${b.tierDates[i] || ''}">
+        <div class="tier-row">
+          <span class="tier-icon">${level.icon}</span>
+          <span class="tier-label">${level.name}</span>
+          <input type="date" class="tier-date-input" data-idx="${i}" value="${b.tierDates[i] || ''}">
+        </div>
+        <input type="text" class="tier-desc-input" data-idx="${i}" placeholder="À quoi correspond ce palier ?" value="${(b.tierDescs && b.tierDescs[i]) || ''}">
       `;
       container.appendChild(row);
     }
@@ -904,19 +979,28 @@ document.getElementById('editSaveBtn').addEventListener('click', async ()=>{
   b.name = document.getElementById('eTitle').value.trim() || b.name;
   b.desc = document.getElementById('eDesc').value.trim();
   b.icon = document.getElementById('eIcon').value.trim() || b.icon;
+  b.cat = document.getElementById('eCategory').value || b.cat;
 
   if(b.type === 'unique'){
     b.unlocked = document.getElementById('eUnlockedCheck').checked;
-    b.unlockedDate = b.unlocked ? (document.getElementById('eUnlockedDate').value || new Date().toISOString().slice(0,10)) : null;
+    b.unlockedDate = b.unlocked ? (document.getElementById('eUnlockedDate').value || null) : null;
     if(b.unlocked && !wasUnlocked) showToast(b.icon, b.name);
   } else {
-    const inputs = document.querySelectorAll('.tier-date-input');
+    const dateInputs = document.querySelectorAll('.tier-date-input');
     let newTierDates = [...b.tierDates];
-    inputs.forEach(inp=>{
+    dateInputs.forEach(inp=>{
       const idx = parseInt(inp.dataset.idx, 10);
       newTierDates[idx] = inp.value || null;
     });
     b.tierDates = newTierDates;
+
+    const descInputs = document.querySelectorAll('.tier-desc-input');
+    let newTierDescs = [...(b.tierDescs || Array(b.tierCount).fill(''))];
+    descInputs.forEach(inp=>{
+      const idx = parseInt(inp.dataset.idx, 10);
+      newTierDescs[idx] = inp.value.trim();
+    });
+    b.tierDescs = newTierDescs;
     let highest = 0;
     newTierDates.forEach((d, idx) => { if(d) highest = idx+1; });
     const newTier = highest;
@@ -939,6 +1023,52 @@ document.getElementById('editDeleteBtn').addEventListener('click', async ()=>{
   state.badges = state.badges.filter(b=>b.id!==editingId);
   editOverlay.classList.remove('show');
   editingId = null;
+  render();
+  await saveAll();
+});
+
+/* ---------- CATÉGORIES ---------- */
+const manageCatsOverlay = document.getElementById('manageCatsOverlay');
+
+function renderCatRows(){
+  const container = document.getElementById('catRowsContainer');
+  container.innerHTML = state.categories.map(c => `
+    <div class="cat-row">
+      <span>${c}</span>
+      <button data-cat="${c}" title="Supprimer">🗑</button>
+    </div>
+  `).join('');
+  container.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const cat = btn.dataset.cat;
+      const usedCount = state.badges.filter(b=>b.cat===cat).length;
+      if(usedCount > 0){
+        alert(`Impossible de supprimer "${cat}" : ${usedCount} achievement(s) l'utilisent encore. Change d'abord leur catégorie.`);
+        return;
+      }
+      state.categories = state.categories.filter(c=>c!==cat);
+      renderCatRows();
+      render();
+      await saveAll();
+    });
+  });
+}
+
+document.getElementById('openManageCatsBtn').addEventListener('click', ()=>{
+  renderCatRows();
+  manageCatsOverlay.classList.add('show');
+});
+document.getElementById('closeManageCatsBtn').addEventListener('click', ()=>{
+  manageCatsOverlay.classList.remove('show');
+});
+document.getElementById('addCatBtn').addEventListener('click', async ()=>{
+  const input = document.getElementById('newCatInput');
+  const name = input.value.trim();
+  if(!name) return;
+  if(state.categories.includes(name)){ input.value=''; return; }
+  state.categories.push(name);
+  input.value = '';
+  renderCatRows();
   render();
   await saveAll();
 });
