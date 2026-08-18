@@ -360,14 +360,49 @@ const DEFAULT_CATEGORIES = ["Santé","Discipline","Social","Apprentissage","Aven
 const FALLBACK_CAT = "Perso";
 const NEW_CAT_OPTION = "__new__";
 
-const RANKS = [
-  {name:"Novice de terrain", min:0},
-  {name:"Éclaireur", min:150},
-  {name:"Arpenteur", min:350},
-  {name:"Vétéran", min:650},
-  {name:"Maître explorateur", min:1000},
-  {name:"Légende du carnet", min:1500},
+/* ---------- SYSTÈME DE NIVEAUX ---------- */
+const MAX_LEVEL = 50;
+
+// Paliers de titre (le titre affiché change tous les 5 niveaux)
+const LEVEL_TITLES = [
+  {upTo:5,  title:"Novice de terrain"},
+  {upTo:10, title:"Éclaireur"},
+  {upTo:15, title:"Arpenteur"},
+  {upTo:20, title:"Broussard"},
+  {upTo:25, title:"Coureur des bois"},
+  {upTo:30, title:"Vétéran"},
+  {upTo:35, title:"Chef d'expédition"},
+  {upTo:40, title:"Maître explorateur"},
+  {upTo:45, title:"Éclaireur légendaire"},
+  {upTo:50, title:"Légende du carnet"},
 ];
+function titleForLevel(level){
+  for(const t of LEVEL_TITLES){ if(level <= t.upTo) return t.title; }
+  return LEVEL_TITLES[LEVEL_TITLES.length-1].title;
+}
+
+// XP cumulé nécessaire pour ATTEINDRE chaque niveau (courbe progressive :
+// chaque niveau demande un peu plus que le précédent)
+const LEVEL_THRESHOLDS = [0]; // index 0 = seuil du niveau 1 (0 XP)
+for(let lvl=2; lvl<=MAX_LEVEL; lvl++){
+  LEVEL_THRESHOLDS.push(Math.round(18 * Math.pow(lvl, 1.65)));
+}
+
+function getLevelInfo(xp){
+  let level = 1;
+  for(let i=LEVEL_THRESHOLDS.length-1; i>=0; i--){
+    if(xp >= LEVEL_THRESHOLDS[i]){ level = i+1; break; }
+  }
+  const currentThreshold = LEVEL_THRESHOLDS[level-1];
+  const nextThreshold = level < MAX_LEVEL ? LEVEL_THRESHOLDS[level] : null;
+  return {
+    level,
+    title: titleForLevel(level),
+    currentThreshold,
+    nextThreshold,
+    isMax: level >= MAX_LEVEL,
+  };
+}
 
 const DEFAULT_BADGES = [
   {id:"d1", cat:"Santé", icon:"🌅", name:"Lève-tôt", desc:"Debout avant 7h, 5 jours de suite", tier:"argent", type:"unique", unlocked:false, unlockedDate:null},
@@ -523,28 +558,20 @@ function totalXP(){
   return state.badges.reduce((sum,b) => sum + badgeXP(b), 0);
 }
 
-function getRank(xp){
-  let current = RANKS[0]; let next = RANKS[1];
-  for(let i=0;i<RANKS.length;i++){
-    if(xp >= RANKS[i].min){ current = RANKS[i]; next = RANKS[i+1] || null; }
-  }
-  return {current, next};
-}
-
 /* ---------- RENDER ---------- */
 function renderHeader(){
   const xp = totalXP();
-  const {current, next} = getRank(xp);
-  document.getElementById('rankName').textContent = current.name;
-  document.getElementById('rankBadge').textContent = (RANKS.indexOf(current)+1);
-  if(next){
-    const span = next.min - current.min;
-    const progress = xp - current.min;
+  const info = getLevelInfo(xp);
+  document.getElementById('rankName').textContent = `Niveau ${info.level} — ${info.title}`;
+  document.getElementById('rankBadge').textContent = info.level;
+  if(!info.isMax){
+    const span = info.nextThreshold - info.currentThreshold;
+    const progress = xp - info.currentThreshold;
     document.getElementById('xpFill').style.width = Math.min(100, (progress/span)*100) + '%';
-    document.getElementById('xpLabel').textContent = `${xp} / ${next.min} XP`;
+    document.getElementById('xpLabel').textContent = `${xp} / ${info.nextThreshold} XP — prochain niveau`;
   } else {
     document.getElementById('xpFill').style.width = '100%';
-    document.getElementById('xpLabel').textContent = `${xp} XP — rang maximum`;
+    document.getElementById('xpLabel').textContent = `${xp} XP — niveau maximum (${MAX_LEVEL})`;
   }
   document.getElementById('streakLabel').textContent =
     state.streak === 0 ? "0 jour de suite" : state.streak === 1 ? "1 jour de suite" : `${state.streak} jours de suite`;
