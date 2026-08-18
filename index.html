@@ -606,9 +606,9 @@ function renderBadges(){
 
 function render(){ renderHeader(); renderCategories(); renderBadges(); }
 
-function showToast(icon, name){
+function showToast(iconHTML, name){
   const toast = document.getElementById('toast');
-  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastIcon').innerHTML = iconHTML;
   document.getElementById('toastName').textContent = name;
   toast.classList.add('show');
   setTimeout(()=> toast.classList.remove('show'), 2600);
@@ -817,7 +817,7 @@ document.getElementById('editSaveBtn').addEventListener('click', async ()=>{
     const newTier = highest;
     if(newTier > b.currentTier){
       const level = TIER_LEVELS[newTier-1];
-      showToast(level ? level.icon : '⭐', `${b.name} — ${level ? level.name : ''}`);
+      showToast(tierIconHTML(level, 18), `${b.name} — ${level ? level.name : ''}`);
     }
     b.currentTier = newTier;
   }
