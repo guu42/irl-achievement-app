@@ -40,135 +40,30 @@ body{
 }
 
 /* ===== AUTH SCREEN ===== */
-.auth-screen{
-  min-height: 100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding: 24px;
-}
-.auth-box{
-  width:100%; max-width: 360px;
-  background: var(--forest);
-  border: 2px dashed var(--brass);
-  border-radius: 10px;
-  padding: 28px 22px;
-}
-.auth-title{
-  font-family: var(--font-display);
-  font-size: 26px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-  text-align:center;
-}
+.auth-screen{ min-height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 24px; }
+.auth-box{ width:100%; max-width: 360px; background: var(--forest); border: 2px dashed var(--brass); border-radius: 10px; padding: 28px 22px; }
+.auth-title{ font-family: var(--font-display); font-size: 26px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; text-align:center; }
 .auth-title span{ color: var(--brass); }
-.auth-sub{
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-align:center;
-  color: rgba(246,241,228,0.6);
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.auth-box input{
-  width:100%;
-  background: var(--canvas);
-  border:none;
-  border-radius:4px;
-  padding:12px 14px;
-  font-family: var(--font-body);
-  font-size:14px;
-  color: var(--ink);
-  margin-bottom: 10px;
-}
-.auth-box button{
-  width:100%;
-  background: var(--brass);
-  color: var(--ink);
-  border:none;
-  font-family: var(--font-display);
-  text-transform:uppercase;
-  letter-spacing:1px;
-  font-weight:700;
-  font-size:13px;
-  padding:12px;
-  border-radius:4px;
-  cursor:pointer;
-  margin-top: 4px;
-}
+.auth-sub{ font-family: var(--font-mono); font-size: 11px; text-align:center; color: rgba(246,241,228,0.6); margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+.auth-box input{ width:100%; background: var(--canvas); border:none; border-radius:4px; padding:12px 14px; font-family: var(--font-body); font-size:14px; color: var(--ink); margin-bottom: 10px; }
+.auth-box button{ width:100%; background: var(--brass); color: var(--ink); border:none; font-family: var(--font-display); text-transform:uppercase; letter-spacing:1px; font-weight:700; font-size:13px; padding:12px; border-radius:4px; cursor:pointer; margin-top: 4px; }
 .auth-box button:hover{ background: var(--brass-light); }
-.auth-switch{
-  text-align:center;
-  margin-top:14px;
-  font-size:12px;
-  color: rgba(246,241,228,0.6);
-}
+.auth-switch{ text-align:center; margin-top:14px; font-size:12px; color: rgba(246,241,228,0.6); }
 .auth-switch a{ color: var(--brass-light); cursor:pointer; text-decoration: underline; }
-.auth-error{
-  color: var(--rust);
-  font-size: 12px;
-  margin-bottom: 10px;
-  min-height: 14px;
-  font-family: var(--font-mono);
-}
+.auth-error{ color: var(--rust); font-size: 12px; margin-bottom: 10px; min-height: 14px; font-family: var(--font-mono); }
 
 /* ===== APP ===== */
 #app{ display:none; }
-.header{
-  background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%);
-  border-bottom: 3px solid var(--brass);
-  padding: 28px 20px 22px;
-  position: relative;
-}
-.header::after{
-  content:"";
-  position:absolute; left:0; right:0; bottom:-6px; height:3px;
-  background: repeating-linear-gradient(90deg, var(--brass) 0 8px, transparent 8px 16px);
-  opacity:0.5;
-}
+.header{ background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%); border-bottom: 3px solid var(--brass); padding: 28px 20px 22px; position: relative; }
+.header::after{ content:""; position:absolute; left:0; right:0; bottom:-6px; height:3px; background: repeating-linear-gradient(90deg, var(--brass) 0 8px, transparent 8px 16px); opacity:0.5; }
 .top-row{ display:flex; justify-content:space-between; align-items:flex-start; }
-.eyebrow{
-  font-family: var(--font-mono);
-  letter-spacing: 3px;
-  font-size: 11px;
-  color: var(--brass-light);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.title{
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 32px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--white-ish);
-}
+.eyebrow{ font-family: var(--font-mono); letter-spacing: 3px; font-size: 11px; color: var(--brass-light); text-transform: uppercase; margin-bottom: 6px; }
+.title{ font-family: var(--font-display); font-weight: 700; font-size: 32px; text-transform: uppercase; letter-spacing: 1px; color: var(--white-ish); }
 .title span{ color: var(--brass); }
-.logout-btn{
-  background: none;
-  border: 1px solid rgba(198,154,61,0.5);
-  color: rgba(246,241,228,0.7);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor:pointer;
-  flex-shrink:0;
-}
+.logout-btn{ background: none; border: 1px solid rgba(198,154,61,0.5); color: rgba(246,241,228,0.7); font-family: var(--font-mono); font-size: 10px; text-transform:uppercase; letter-spacing:1px; padding: 6px 10px; border-radius: 4px; cursor:pointer; flex-shrink:0; }
 
 .rank-bar{ margin-top: 18px; display:flex; align-items:center; gap: 14px; }
-.rank-badge{
-  width: 54px; height: 54px; border-radius: 50%;
-  border: 2px solid var(--brass); display:flex; align-items:center; justify-content:center;
-  font-family: var(--font-display); font-size: 20px; font-weight:700;
-  background: radial-gradient(circle at 35% 30%, var(--teal), var(--forest-deep));
-  flex-shrink:0;
-}
+.rank-badge{ width: 54px; height: 54px; border-radius: 50%; border: 2px solid var(--brass); display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-size: 20px; font-weight:700; background: radial-gradient(circle at 35% 30%, var(--teal), var(--forest-deep)); flex-shrink:0; }
 .rank-info{ flex:1; }
 .rank-name{ font-family: var(--font-display); font-size: 15px; letter-spacing: 1px; text-transform: uppercase; color: var(--brass-light); }
 .xp-track{ margin-top: 6px; height: 8px; background: rgba(0,0,0,0.35); border-radius: 4px; overflow:hidden; border: 1px solid rgba(198,154,61,0.4); }
@@ -176,76 +71,27 @@ body{
 .xp-label{ font-family: var(--font-mono); font-size: 10px; color: rgba(246,241,228,0.6); margin-top: 4px; }
 
 .streak-row{ margin-top: 16px; display:flex; gap: 10px; align-items:center; }
-.checkin-btn{
-  background: var(--brass); color: var(--ink); border: none;
-  font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-size: 13px; font-weight: 700;
-  padding: 10px 18px; border-radius: 3px; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease;
-}
+.checkin-btn{ background: var(--brass); color: var(--ink); border: none; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-size: 13px; font-weight: 700; padding: 10px 18px; border-radius: 3px; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease; }
 .checkin-btn:hover{ background: var(--brass-light); }
 .checkin-btn:active{ transform: scale(0.96); }
 .checkin-btn:disabled{ background: rgba(198,154,61,0.25); color: rgba(246,241,228,0.4); cursor:default; }
 .streak-count{ font-family: var(--font-mono); font-size: 12px; color: var(--brass-light); }
 
-.new-achievement-bar{ padding: 16px 20px 0; }
-.new-achievement-btn{
-  width:100%;
-  background: var(--rust);
-  color: var(--white-ish);
-  border:none;
-  font-family: var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight:700;
-  font-size: 14px;
-  padding: 13px;
-  border-radius: 6px;
-  cursor:pointer;
-  border: 2px dashed rgba(246,241,228,0.4);
-}
+.action-bar{ padding: 16px 20px 0; display:flex; gap:10px; }
+.new-achievement-btn{ flex:2; background: var(--rust); color: var(--white-ish); border:none; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-weight:700; font-size: 14px; padding: 13px; border-radius: 6px; cursor:pointer; border: 2px dashed rgba(246,241,228,0.4); }
 .new-achievement-btn:hover{ background: #c65f38; }
+.manage-cat-btn{ flex:1; background: var(--teal); color: var(--white-ish); border:none; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-weight:700; font-size: 12px; padding: 13px 8px; border-radius: 6px; cursor:pointer; }
+.manage-cat-btn:hover{ background: #4d7062; }
 
-.categories-row{ display:flex; align-items:center; gap:8px; padding: 16px 20px 4px; }
-.categories{ display:flex; gap: 8px; overflow-x: auto; flex:1; scrollbar-width: none; }
-.manage-cats-btn{
-  flex-shrink:0;
-  background: transparent;
-  border: 1px solid rgba(198,154,61,0.4);
-  color: var(--brass-light);
-  border-radius: 50%;
-  width: 30px; height: 30px;
-  cursor:pointer;
-  font-size: 14px;
-}
-.cat-row{
-  display:flex; align-items:center; gap:10px;
-  padding: 9px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-}
-.cat-row span{ flex:1; font-family: var(--font-display); font-size:13px; text-transform:uppercase; letter-spacing:0.5px; }
-.cat-row button{
-  background:none; border:none; color: var(--rust); cursor:pointer; font-size:16px;
-}
-.add-cat-row{ display:flex; gap:8px; margin-top:14px; }
-.add-cat-row input{ flex:1; }
-.add-cat-row button{
-  background: var(--teal); color:var(--white-ish); border:none; border-radius:5px; padding: 0 14px;
-  font-family: var(--font-display); text-transform:uppercase; font-size:12px; cursor:pointer;
-}
+.categories{ display:flex; gap: 8px; overflow-x: auto; padding: 16px 20px 4px; scrollbar-width: none; }
 .categories::-webkit-scrollbar{ display:none; }
-.cat-chip{
-  flex-shrink:0; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
-  padding: 7px 14px; border-radius: 20px; border: 1px solid rgba(198,154,61,0.4); color: rgba(246,241,228,0.7);
-  cursor: pointer; background: transparent; white-space: nowrap; transition: all 0.15s ease;
-}
+.cat-chip{ flex-shrink:0; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 7px 14px; border-radius: 20px; border: 1px solid rgba(198,154,61,0.4); color: rgba(246,241,228,0.7); cursor: pointer; background: transparent; white-space: nowrap; transition: all 0.15s ease; }
 .cat-chip.active{ background: var(--brass); color: var(--ink); border-color: var(--brass); font-weight: 700; }
 
 .section-label{ font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(246,241,228,0.5); padding: 18px 20px 8px; }
 
 .badge-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; padding: 0 20px; }
-.badge-card{
-  background: var(--canvas); border-radius: 6px; padding: 16px 12px 14px; position: relative; cursor: pointer;
-  border: 2px dashed transparent; transition: transform 0.15s ease, box-shadow 0.15s ease; color: var(--ink);
-}
+.badge-card{ background: var(--canvas); border-radius: 6px; padding: 16px 12px 14px; position: relative; cursor: pointer; border: 2px dashed transparent; transition: transform 0.15s ease, box-shadow 0.15s ease; color: var(--ink); }
 .badge-card:hover{ transform: translateY(-2px); }
 .badge-card.locked{ background: rgba(236,227,207,0.08); color: rgba(246,241,228,0.45); }
 .badge-card.locked .patch-icon{ filter: grayscale(1) opacity(0.35); }
@@ -253,31 +99,18 @@ body{
 
 .tier-tag{ position:absolute; top:8px; right:8px; font-family: var(--font-mono); font-size: 9px; letter-spacing:1px; text-transform:uppercase; padding: 2px 6px; border-radius: 3px; color: var(--white-ish); background: var(--teal); }
 
-.patch-icon{
-  width: 46px; height: 46px; border-radius: 50%; display:flex; align-items:center; justify-content:center;
-  font-size: 22px; margin-bottom: 10px; background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass)); border: 2px solid var(--ink);
-  position:relative;
-}
+.patch-icon{ width: 46px; height: 46px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 22px; margin-bottom: 10px; background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass)); border: 2px solid var(--ink); position:relative; }
 .badge-card.locked .patch-icon{ background: rgba(0,0,0,0.15); border-color: rgba(0,0,0,0.2); }
-.check-overlay{
-  position:absolute; bottom:-4px; right:-4px;
-  background: var(--forest); border-radius:50%; width:18px; height:18px;
-  display:flex; align-items:center; justify-content:center; font-size:11px;
-  border: 2px solid var(--canvas);
-}
+.check-overlay{ position:absolute; bottom:-4px; right:-4px; background: var(--forest); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:11px; border: 2px solid var(--canvas); }
 
 .badge-name{ font-family: var(--font-display); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; margin-bottom: 4px; }
 .badge-desc{ font-size: 12px; line-height: 1.35; opacity: 0.85; }
 .badge-meta{ font-family: var(--font-mono); font-size: 10px; margin-top: 8px; color: var(--rust); font-weight:bold; }
 .badge-card.locked .badge-meta{ color: rgba(246,241,228,0.4); }
 .badge-date{ font-family: var(--font-mono); font-size: 10px; margin-top: 3px; opacity:0.6; }
+.badge-tier-desc{ font-size: 11px; margin-top: 3px; opacity:0.7; font-style: italic; }
 
-.toast{
-  position: fixed; bottom: -120px; left: 50%; transform: translateX(-50%);
-  background: var(--canvas); color: var(--ink); padding: 14px 20px; border-radius: 8px; border: 2px dashed var(--rust);
-  display:flex; align-items:center; gap: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-  transition: bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 100; max-width: 90vw;
-}
+.toast{ position: fixed; bottom: -120px; left: 50%; transform: translateX(-50%); background: var(--canvas); color: var(--ink); padding: 14px 20px; border-radius: 8px; border: 2px dashed var(--rust); display:flex; align-items:center; gap: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); transition: bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 100; max-width: 90vw; }
 .toast.show{ bottom: 24px; }
 .toast-icon{ width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass)); display:flex; align-items:center; justify-content:center; font-size: 18px; border: 2px solid var(--ink); flex-shrink:0; }
 .toast-text{ font-family: var(--font-display); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
@@ -286,113 +119,45 @@ body{
 .loading{ text-align:center; padding: 60px 20px; color: rgba(246,241,228,0.5); font-family: var(--font-mono); font-size: 12px; }
 
 /* ===== MODALS ===== */
-.modal-overlay{
-  display:none;
-  position:fixed; inset:0;
-  background: rgba(0,0,0,0.65);
-  z-index: 200;
-  align-items:flex-end;
-  justify-content:center;
-}
+.modal-overlay{ display:none; position:fixed; inset:0; background: rgba(0,0,0,0.65); z-index: 200; align-items:flex-end; justify-content:center; }
 .modal-overlay.show{ display:flex; }
-.modal-box{
-  background: var(--canvas);
-  color: var(--ink);
-  width:100%;
-  max-width: 460px;
-  max-height: 88vh;
-  overflow-y:auto;
-  border-radius: 14px 14px 0 0;
-  padding: 22px 20px 28px;
-}
-@media (min-width: 500px){
-  .modal-overlay{ align-items:center; }
-  .modal-box{ border-radius: 14px; }
-}
-.modal-title{
-  font-family: var(--font-display);
-  font-size: 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 16px;
-}
-.field-label{
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--teal);
-  margin-bottom: 5px;
-  margin-top: 14px;
-  display:block;
-}
-.modal-box input[type="text"], .modal-box input[type="date"], .modal-box select, .modal-box textarea{
-  width:100%;
-  background: var(--white-ish);
-  border: 1px solid rgba(0,0,0,0.15);
-  border-radius: 5px;
-  padding: 10px 12px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--ink);
-}
+.modal-box{ background: var(--canvas); color: var(--ink); width:100%; max-width: 460px; max-height: 88vh; overflow-y:auto; border-radius: 14px 14px 0 0; padding: 22px 20px 28px; }
+@media (min-width: 500px){ .modal-overlay{ align-items:center; } .modal-box{ border-radius: 14px; } }
+.modal-title{ font-family: var(--font-display); font-size: 20px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+.field-label{ font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); margin-bottom: 5px; margin-top: 14px; display:block; }
+.modal-box input[type="text"], .modal-box input[type="date"], .modal-box select, .modal-box textarea{ width:100%; background: var(--white-ish); border: 1px solid rgba(0,0,0,0.15); border-radius: 5px; padding: 10px 12px; font-family: var(--font-body); font-size: 14px; color: var(--ink); }
 .emoji-quickpicks{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
-.emoji-quickpicks button{
-  background: var(--white-ish);
-  border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 6px;
-  font-size: 18px;
-  padding: 6px 9px;
-  cursor:pointer;
-}
+.emoji-quickpicks button{ background: var(--white-ish); border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; font-size: 18px; padding: 6px 9px; cursor:pointer; }
 .emoji-quickpicks button:hover{ background: var(--canvas-dark); }
 
 .type-toggle{ display:flex; gap:8px; margin-top: 6px; }
-.type-toggle label{
-  flex:1;
-  text-align:center;
-  padding: 10px 6px;
-  border-radius: 6px;
-  border: 2px solid rgba(0,0,0,0.15);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor:pointer;
-}
+.type-toggle label{ flex:1; text-align:center; padding: 10px 6px; border-radius: 6px; border: 2px solid rgba(0,0,0,0.15); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; cursor:pointer; }
 .type-toggle input{ display:none; }
-.type-toggle input:checked + span{ font-weight:bold; }
-.type-toggle label.active{ border-color: var(--rust); background: rgba(177,80,44,0.1); }
+.type-toggle label.active{ border-color: var(--rust); background: rgba(177,80,44,0.1); font-weight:bold; }
 
-.tier-row-block{ padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.08); }
-.tier-row{
-  display:flex; align-items:center; gap:10px;
-}
-.tier-row .tier-icon{ font-size:20px; width:26px; text-align:center; }
+.tier-row{ padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.tier-row-top{ display:flex; align-items:center; gap:10px; }
+.tier-row .tier-icon{ font-size:20px; width:26px; text-align:center; flex-shrink:0; }
 .tier-row .tier-label{ flex:1; font-family: var(--font-display); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
-.tier-row input[type="date"]{ width: 140px; }
-.tier-desc-input{ margin-top:6px; font-size:12px !important; padding:7px 10px !important; }
+.tier-row input[type="date"]{ width: 135px; }
+.tier-desc-input{ margin-top:6px; font-size: 12px !important; }
 
 .unique-unlock-row{ display:flex; align-items:center; gap:10px; margin-top:10px; }
 .unique-unlock-row label{ font-family: var(--font-mono); font-size:11px; text-transform:uppercase; }
 
 .modal-actions{ display:flex; gap:10px; margin-top: 22px; }
-.modal-actions button{
-  flex:1;
-  font-family: var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight:700;
-  font-size: 13px;
-  padding: 12px;
-  border-radius: 6px;
-  border: none;
-  cursor:pointer;
-}
+.modal-actions button{ flex:1; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-weight:700; font-size: 13px; padding: 12px; border-radius: 6px; border: none; cursor:pointer; }
 .btn-primary{ background: var(--brass); color: var(--ink); }
 .btn-primary:hover{ background: var(--brass-light); }
 .btn-secondary{ background: transparent; color: var(--ink); border: 1px solid rgba(0,0,0,0.25) !important; }
 .btn-danger{ background: none; color: var(--rust); text-decoration: underline; font-size: 12px; margin-top: 14px; text-align:center; cursor:pointer; }
+
+.cat-manage-row{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.cat-manage-row span{ flex:1; font-family: var(--font-display); font-size:13px; text-transform:uppercase; letter-spacing:0.5px; }
+.cat-manage-row button{ background:none; border:none; color: var(--rust); font-size:16px; cursor:pointer; }
+.add-cat-row{ display:flex; gap:8px; margin-top:14px; }
+.add-cat-row input{ flex:1; }
+.add-cat-row button{ background: var(--teal); color:var(--white-ish); border:none; border-radius:5px; padding:0 14px; font-family: var(--font-display); text-transform:uppercase; font-size:12px; font-weight:700; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -439,14 +204,12 @@ body{
     </div>
   </div>
 
-  <div class="new-achievement-bar">
+  <div class="action-bar">
     <button class="new-achievement-btn" id="openCreateBtn">+ Nouvel achievement</button>
+    <button class="manage-cat-btn" id="openManageCatBtn">🗂 Catégories</button>
   </div>
 
-  <div class="categories-row">
-    <div class="categories" id="categories"></div>
-    <button class="manage-cats-btn" id="openManageCatsBtn">⚙</button>
-  </div>
+  <div class="categories" id="categories"></div>
   <div class="section-label">Achievements</div>
   <div class="badge-grid" id="badgeGrid">
     <div class="loading">Ouverture du carnet…</div>
@@ -474,7 +237,7 @@ body{
     <div class="emoji-quickpicks" id="cEmojiPicks"></div>
 
     <label class="field-label">Catégorie</label>
-    <select id="cCategory"></select>
+    <select id="cCat"></select>
 
     <label class="field-label">Type</label>
     <div class="type-toggle">
@@ -485,6 +248,8 @@ body{
     <div id="tierCountBlock" style="display:none;">
       <label class="field-label">Nombre de paliers</label>
       <select id="cTierCount"></select>
+      <label class="field-label">Description de chaque palier (facultatif)</label>
+      <div id="cTierDescContainer"></div>
     </div>
 
     <div class="modal-actions">
@@ -509,19 +274,19 @@ body{
     <input type="text" id="eIcon" maxlength="4">
 
     <label class="field-label">Catégorie</label>
-    <select id="eCategory"></select>
+    <select id="eCat"></select>
 
     <div id="editUniqueBlock" style="display:none;">
       <div class="unique-unlock-row">
         <input type="checkbox" id="eUnlockedCheck">
         <label for="eUnlockedCheck">Débloqué</label>
       </div>
-      <label class="field-label">Date de déblocage</label>
+      <label class="field-label">Date de déblocage (facultatif)</label>
       <input type="date" id="eUnlockedDate">
     </div>
 
     <div id="editTieredBlock" style="display:none;">
-      <label class="field-label">Paliers atteints (laisse vide si non atteint)</label>
+      <label class="field-label">Paliers</label>
       <div id="tierRowsContainer"></div>
     </div>
 
@@ -533,17 +298,17 @@ body{
   </div>
 </div>
 
-<!-- ===== MODAL CATÉGORIES ===== -->
-<div class="modal-overlay" id="manageCatsOverlay">
+<!-- ===== MODAL GESTION CATÉGORIES ===== -->
+<div class="modal-overlay" id="manageCatOverlay">
   <div class="modal-box">
     <div class="modal-title">Catégories</div>
-    <div id="catRowsContainer"></div>
+    <div id="catManageList"></div>
     <div class="add-cat-row">
       <input type="text" id="newCatInput" placeholder="Nouvelle catégorie">
       <button id="addCatBtn">Ajouter</button>
     </div>
     <div class="modal-actions">
-      <button class="btn-primary" id="closeManageCatsBtn" style="width:100%;">Fermer</button>
+      <button class="btn-primary" id="closeManageCatBtn" style="flex:1;">Fermer</button>
     </div>
   </div>
 </div>
@@ -572,14 +337,22 @@ const TIER_LEVELS = [
   {name:"Argent", icon:"🥈", xp:40},
   {name:"Or", icon:"🥇", xp:60},
   {name:"Diamant", icon:"💎", xp:90},
-  {name:"Améthyste", icon:"🟣", xp:120},
-  {name:"Émeraude", icon:"🟢", xp:150},
-  {name:"Rubis", icon:"🔴", xp:190},
-  {name:"Opale", icon:"⚪", xp:240},
+  {name:"Améthyste", iconImg:"icons/gem-amethyste.png", xp:120},
+  {name:"Émeraude", iconImg:"icons/gem-emeraude.png", xp:150},
+  {name:"Rubis", iconImg:"icons/gem-rubis.png", xp:190},
+  {name:"Opale", iconImg:"icons/gem-opale.png", xp:240},
 ];
+function tierIconHTML(level, sizePx){
+  if(!level) return '⭐';
+  if(level.iconImg) return `<img src="${level.iconImg}" alt="${level.name}" style="width:${sizePx}px;height:${sizePx}px;object-fit:contain;">`;
+  return level.icon;
+}
 const UNIQUE_CUSTOM_XP = 30;
 const OLD_TIER_XP = { bronze: 20, argent: 50, or: 100 };
 const QUICK_EMOJIS = ["🏆","🎯","🔥","💪","📚","🎨","🎵","🍕","✈️","🎮","🌱","🧘","⚽","🏃","💧","😴"];
+const DEFAULT_CATEGORIES = ["Santé","Discipline","Social","Apprentissage","Aventure","Perso"];
+const FALLBACK_CAT = "Perso";
+const NEW_CAT_OPTION = "__new__";
 
 const RANKS = [
   {name:"Novice de terrain", min:0},
@@ -609,8 +382,7 @@ const DEFAULT_BADGES = [
   {id:"d16", cat:"Aventure", icon:"✈️", name:"Nouveau territoire", desc:"Visiter une ville ou un pays inconnu", tier:"or", type:"unique", unlocked:false, unlockedDate:null},
 ];
 
-const DEFAULT_CATEGORIES = ["Santé","Discipline","Social","Apprentissage","Aventure","Perso"];
-let state = { badges: [], streak: 0, lastCheckin: null, categories: [] };
+let state = { badges: [], categories: [], streak: 0, lastCheckin: null };
 let activeCat = "Tout";
 let currentUser = null;
 let isSignup = false;
@@ -642,7 +414,7 @@ document.getElementById('authSubmitBtn').addEventListener('click', async () => {
       await signInWithEmailAndPassword(auth, email, password);
     }
   }catch(e){
-    authError.textContent = translateAuthError(e.code) + (e.code ? "" : " (" + e.message + ")");
+    authError.textContent = translateAuthError(e.code);
   }
 });
 
@@ -682,34 +454,35 @@ async function loadState(){
   if(snap.exists()){
     const data = snap.data();
     state.badges = migrateBadges(data.badges || DEFAULT_BADGES);
+    state.categories = data.categories && data.categories.length ? data.categories : deriveCategories(state.badges);
     state.streak = data.streak || 0;
     state.lastCheckin = data.lastCheckin || null;
-    state.categories = data.categories && data.categories.length
-      ? data.categories
-      : Array.from(new Set(state.badges.map(b=>b.cat)));
   } else {
     state.badges = DEFAULT_BADGES;
-    state.streak = 0; state.lastCheckin = null;
     state.categories = [...DEFAULT_CATEGORIES];
+    state.streak = 0; state.lastCheckin = null;
     await saveAll();
   }
-  // s'assure que toute catégorie utilisée par un badge existe dans la liste
-  state.badges.forEach(b => { if(!state.categories.includes(b.cat)) state.categories.push(b.cat); });
-  if(!state.categories.includes("Perso")) state.categories.push("Perso");
   render();
+}
+
+function deriveCategories(badges){
+  const set = new Set(badges.map(b=>b.cat).filter(Boolean));
+  set.add(FALLBACK_CAT);
+  return [...set];
 }
 
 function migrateBadges(badges){
   return badges.map(b => {
     if(!b.type) b.type = "unique";
+    if(!b.cat) b.cat = FALLBACK_CAT;
     if(b.type === "unique" && b.unlockedDate === undefined) b.unlockedDate = null;
     if(b.type === "tiered"){
       if(!b.tierCount) b.tierCount = 5;
       if(b.currentTier === undefined) b.currentTier = 0;
       if(!b.tierDates) b.tierDates = Array(b.tierCount).fill(null);
-      if(!b.tierDescs) b.tierDescs = Array(b.tierCount).fill('');
+      if(!b.tierDescriptions) b.tierDescriptions = Array(b.tierCount).fill('');
     }
-    if(!b.cat) b.cat = "Perso";
     return b;
   });
 }
@@ -718,9 +491,9 @@ async function saveAll(){
   const ref = doc(db, "users", currentUser.uid);
   await setDoc(ref, {
     badges: state.badges,
+    categories: state.categories,
     streak: state.streak,
-    lastCheckin: state.lastCheckin,
-    categories: state.categories
+    lastCheckin: state.lastCheckin
   });
 }
 
@@ -795,12 +568,11 @@ function renderBadges(){
   const list = activeCat === "Tout" ? state.badges : state.badges.filter(b=>b.cat===activeCat);
   grid.innerHTML = list.map(b => {
     if(b.type === "unique"){
-      const displayIcon = b.icon;
       const meta = b.unlocked ? '✓ débloqué' : 'Non débloqué';
-      const dateLine = b.unlocked && b.unlockedDate ? `<div class="badge-date">${formatDate(b.unlockedDate)}</div>` : '';
+      const dateLine = b.unlockedDate ? `<div class="badge-date">${formatDate(b.unlockedDate)}</div>` : '';
       return `
         <div class="badge-card ${b.unlocked ? 'unlocked':'locked'}" data-id="${b.id}">
-          <div class="patch-icon">${displayIcon}${b.unlocked ? '<span class="check-overlay">✅</span>' : ''}</div>
+          <div class="patch-icon">${b.icon}${b.unlocked ? '<span class="check-overlay">✅</span>' : ''}</div>
           <div class="badge-name">${b.name}</div>
           <div class="badge-desc">${b.desc || ''}</div>
           <div class="badge-meta">${meta}</div>
@@ -809,20 +581,20 @@ function renderBadges(){
     } else {
       const hasTier = b.currentTier > 0;
       const level = hasTier ? TIER_LEVELS[b.currentTier-1] : null;
-      const displayIcon = level ? level.icon : b.icon;
       const meta = hasTier ? `${level.name} — ${b.currentTier}/${b.tierCount}` : `0/${b.tierCount} paliers`;
       const dateVal = hasTier ? b.tierDates[b.currentTier-1] : null;
+      const tierDesc = hasTier ? (b.tierDescriptions[b.currentTier-1] || '') : '';
       const dateLine = dateVal ? `<div class="badge-date">${formatDate(dateVal)}</div>` : '';
-      const tierDescVal = hasTier && b.tierDescs ? b.tierDescs[b.currentTier-1] : '';
-      const tierDescLine = tierDescVal ? `<div class="badge-desc">${tierDescVal}</div>` : '';
+      const descLine = tierDesc ? `<div class="badge-tier-desc">${tierDesc}</div>` : '';
+      const overlay = hasTier ? `<span class="check-overlay">${tierIconHTML(level, 13)}</span>` : '';
       return `
         <div class="badge-card ${hasTier ? 'unlocked':'locked'}" data-id="${b.id}">
           <div class="tier-tag">${hasTier ? b.currentTier+'/'+b.tierCount : b.tierCount+' paliers'}</div>
-          <div class="patch-icon">${displayIcon}</div>
+          <div class="patch-icon">${b.icon}${overlay}</div>
           <div class="badge-name">${b.name}</div>
           <div class="badge-desc">${b.desc || ''}</div>
           <div class="badge-meta">${meta}</div>
-          ${tierDescLine}
+          ${descLine}
           ${dateLine}
         </div>`;
     }
@@ -853,6 +625,31 @@ document.getElementById('checkinBtn').addEventListener('click', async ()=>{
   await saveAll();
 });
 
+/* ---------- SELECTS DE CATÉGORIE ---------- */
+function fillCategorySelect(selectEl, selectedValue){
+  selectEl.innerHTML = state.categories.map(c => `<option value="${c}">${c}</option>`).join('')
+    + `<option value="${NEW_CAT_OPTION}">➕ Nouvelle catégorie…</option>`;
+  selectEl.value = state.categories.includes(selectedValue) ? selectedValue : (state.categories[0] || FALLBACK_CAT);
+}
+
+function handleNewCategoryOnSelect(selectEl){
+  selectEl.addEventListener('change', () => {
+    if(selectEl.value === NEW_CAT_OPTION){
+      const name = window.prompt("Nom de la nouvelle catégorie :");
+      const trimmed = (name || '').trim();
+      if(trimmed && !state.categories.includes(trimmed)){
+        state.categories.push(trimmed);
+        saveAll();
+        fillCategorySelect(selectEl, trimmed);
+      } else if(trimmed && state.categories.includes(trimmed)){
+        fillCategorySelect(selectEl, trimmed);
+      } else {
+        fillCategorySelect(selectEl, state.categories[0] || FALLBACK_CAT);
+      }
+    }
+  });
+}
+
 /* ---------- CRÉATION ---------- */
 const createOverlay = document.getElementById('createOverlay');
 const cEmojiPicks = document.getElementById('cEmojiPicks');
@@ -860,6 +657,9 @@ cEmojiPicks.innerHTML = QUICK_EMOJIS.map(e => `<button type="button" data-e="${e
 cEmojiPicks.querySelectorAll('button').forEach(btn=>{
   btn.addEventListener('click', ()=> { document.getElementById('cIcon').value = btn.dataset.e; });
 });
+
+const cCat = document.getElementById('cCat');
+handleNewCategoryOnSelect(cCat);
 
 const cTierCount = document.getElementById('cTierCount');
 for(let n=2; n<=10; n++){
@@ -869,25 +669,38 @@ for(let n=2; n<=10; n++){
   cTierCount.appendChild(opt);
 }
 
+function renderCreateTierDescInputs(){
+  const count = parseInt(cTierCount.value, 10);
+  const container = document.getElementById('cTierDescContainer');
+  const prevValues = [...container.querySelectorAll('.tier-desc-input')].map(i=>i.value);
+  container.innerHTML = '';
+  for(let i=0; i<count; i++){
+    const level = TIER_LEVELS[i] || {name:`Palier ${i+1}`, icon:'⭐'};
+    const wrap = document.createElement('div');
+    wrap.style.marginTop = '8px';
+    wrap.innerHTML = `
+      <label class="field-label" style="margin-top:4px; display:flex; align-items:center; gap:6px;">${tierIconHTML(level, 16)} ${level.name}</label>
+      <input type="text" class="tier-desc-input" placeholder="Ex: 5km" value="${prevValues[i] || ''}">
+    `;
+    container.appendChild(wrap);
+  }
+}
+cTierCount.addEventListener('change', renderCreateTierDescInputs);
+
 function updateTypeToggleUI(){
   const type = document.querySelector('input[name="cType"]:checked').value;
   document.getElementById('tierCountBlock').style.display = type === 'tiered' ? 'block' : 'none';
   document.getElementById('typeUniqueLabel').classList.toggle('active', type === 'unique');
   document.getElementById('typeTieredLabel').classList.toggle('active', type === 'tiered');
+  if(type === 'tiered') renderCreateTierDescInputs();
 }
 document.querySelectorAll('input[name="cType"]').forEach(r => r.addEventListener('change', updateTypeToggleUI));
-updateTypeToggleUI();
-
-function populateCategorySelect(selectEl, preselect){
-  selectEl.innerHTML = state.categories.map(c => `<option value="${c}">${c}</option>`).join('');
-  if(preselect && state.categories.includes(preselect)) selectEl.value = preselect;
-}
 
 document.getElementById('openCreateBtn').addEventListener('click', ()=>{
   document.getElementById('cTitle').value = '';
   document.getElementById('cDesc').value = '';
   document.getElementById('cIcon').value = '';
-  populateCategorySelect(document.getElementById('cCategory'), 'Perso');
+  fillCategorySelect(cCat, activeCat !== 'Tout' ? activeCat : (state.categories[0] || FALLBACK_CAT));
   document.querySelector('input[name="cType"][value="unique"]').checked = true;
   updateTypeToggleUI();
   createOverlay.classList.add('show');
@@ -900,12 +713,9 @@ document.getElementById('createConfirmBtn').addEventListener('click', async ()=>
   const desc = document.getElementById('cDesc').value.trim();
   const icon = document.getElementById('cIcon').value.trim() || '🏆';
   const type = document.querySelector('input[name="cType"]:checked').value;
+  const cat = cCat.value === NEW_CAT_OPTION ? (state.categories[0] || FALLBACK_CAT) : cCat.value;
 
-  const newBadge = {
-    id: 'custom-' + Date.now(),
-    cat: document.getElementById('cCategory').value || "Perso",
-    icon, name: title, desc, type
-  };
+  const newBadge = { id: 'custom-' + Date.now(), cat, icon, name: title, desc, type };
   if(type === 'unique'){
     newBadge.unlocked = false;
     newBadge.unlockedDate = null;
@@ -914,7 +724,7 @@ document.getElementById('createConfirmBtn').addEventListener('click', async ()=>
     newBadge.tierCount = tierCount;
     newBadge.currentTier = 0;
     newBadge.tierDates = Array(tierCount).fill(null);
-    newBadge.tierDescs = Array(tierCount).fill('');
+    newBadge.tierDescriptions = [...document.querySelectorAll('.tier-desc-input')].map(i=>i.value.trim());
   }
   state.badges.push(newBadge);
   createOverlay.classList.remove('show');
@@ -924,6 +734,8 @@ document.getElementById('createConfirmBtn').addEventListener('click', async ()=>
 
 /* ---------- ÉDITION ---------- */
 const editOverlay = document.getElementById('editOverlay');
+const eCat = document.getElementById('eCat');
+handleNewCategoryOnSelect(eCat);
 
 function openEditModal(id){
   const b = state.badges.find(x=>x.id===id);
@@ -933,7 +745,7 @@ function openEditModal(id){
   document.getElementById('eTitle').value = b.name;
   document.getElementById('eDesc').value = b.desc || '';
   document.getElementById('eIcon').value = b.icon;
-  populateCategorySelect(document.getElementById('eCategory'), b.cat);
+  fillCategorySelect(eCat, b.cat);
 
   const uniqueBlock = document.getElementById('editUniqueBlock');
   const tieredBlock = document.getElementById('editTieredBlock');
@@ -951,14 +763,14 @@ function openEditModal(id){
     for(let i=0; i<b.tierCount; i++){
       const level = TIER_LEVELS[i] || {name:`Palier ${i+1}`, icon:'⭐'};
       const row = document.createElement('div');
-      row.className = 'tier-row-block';
+      row.className = 'tier-row';
       row.innerHTML = `
-        <div class="tier-row">
-          <span class="tier-icon">${level.icon}</span>
+        <div class="tier-row-top">
+          <span class="tier-icon">${tierIconHTML(level, 20)}</span>
           <span class="tier-label">${level.name}</span>
           <input type="date" class="tier-date-input" data-idx="${i}" value="${b.tierDates[i] || ''}">
         </div>
-        <input type="text" class="tier-desc-input" data-idx="${i}" placeholder="À quoi correspond ce palier ?" value="${(b.tierDescs && b.tierDescs[i]) || ''}">
+        <input type="text" class="tier-desc-input" data-idx="${i}" placeholder="À quoi correspond ce palier ?" value="${(b.tierDescriptions && b.tierDescriptions[i]) || ''}">
       `;
       container.appendChild(row);
     }
@@ -979,28 +791,27 @@ document.getElementById('editSaveBtn').addEventListener('click', async ()=>{
   b.name = document.getElementById('eTitle').value.trim() || b.name;
   b.desc = document.getElementById('eDesc').value.trim();
   b.icon = document.getElementById('eIcon').value.trim() || b.icon;
-  b.cat = document.getElementById('eCategory').value || b.cat;
+  b.cat = eCat.value === NEW_CAT_OPTION ? b.cat : eCat.value;
 
   if(b.type === 'unique'){
     b.unlocked = document.getElementById('eUnlockedCheck').checked;
-    b.unlockedDate = b.unlocked ? (document.getElementById('eUnlockedDate').value || null) : null;
+    b.unlockedDate = document.getElementById('eUnlockedDate').value || null;
     if(b.unlocked && !wasUnlocked) showToast(b.icon, b.name);
   } else {
     const dateInputs = document.querySelectorAll('.tier-date-input');
+    const descInputs = document.querySelectorAll('.tier-desc-input');
     let newTierDates = [...b.tierDates];
+    let newTierDescs = [...(b.tierDescriptions || Array(b.tierCount).fill(''))];
     dateInputs.forEach(inp=>{
       const idx = parseInt(inp.dataset.idx, 10);
       newTierDates[idx] = inp.value || null;
     });
-    b.tierDates = newTierDates;
-
-    const descInputs = document.querySelectorAll('.tier-desc-input');
-    let newTierDescs = [...(b.tierDescs || Array(b.tierCount).fill(''))];
     descInputs.forEach(inp=>{
       const idx = parseInt(inp.dataset.idx, 10);
       newTierDescs[idx] = inp.value.trim();
     });
-    b.tierDescs = newTierDescs;
+    b.tierDates = newTierDates;
+    b.tierDescriptions = newTierDescs;
     let highest = 0;
     newTierDates.forEach((d, idx) => { if(d) highest = idx+1; });
     const newTier = highest;
@@ -1027,48 +838,46 @@ document.getElementById('editDeleteBtn').addEventListener('click', async ()=>{
   await saveAll();
 });
 
-/* ---------- CATÉGORIES ---------- */
-const manageCatsOverlay = document.getElementById('manageCatsOverlay');
+/* ---------- GESTION DES CATÉGORIES ---------- */
+const manageCatOverlay = document.getElementById('manageCatOverlay');
 
-function renderCatRows(){
-  const container = document.getElementById('catRowsContainer');
-  container.innerHTML = state.categories.map(c => `
-    <div class="cat-row">
+function renderCatManageList(){
+  const list = document.getElementById('catManageList');
+  list.innerHTML = state.categories.map(c => `
+    <div class="cat-manage-row">
       <span>${c}</span>
       <button data-cat="${c}" title="Supprimer">🗑</button>
     </div>
   `).join('');
-  container.querySelectorAll('button').forEach(btn=>{
+  list.querySelectorAll('button').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
       const cat = btn.dataset.cat;
-      const usedCount = state.badges.filter(b=>b.cat===cat).length;
-      if(usedCount > 0){
-        alert(`Impossible de supprimer "${cat}" : ${usedCount} achievement(s) l'utilisent encore. Change d'abord leur catégorie.`);
-        return;
-      }
+      if(!confirm(`Supprimer la catégorie "${cat}" ? Les achievements concernés passeront dans "${FALLBACK_CAT}".`)) return;
       state.categories = state.categories.filter(c=>c!==cat);
-      renderCatRows();
+      if(state.categories.length === 0) state.categories = [FALLBACK_CAT];
+      if(!state.categories.includes(FALLBACK_CAT)) state.categories.push(FALLBACK_CAT);
+      state.badges.forEach(b=>{ if(b.cat === cat) b.cat = FALLBACK_CAT; });
+      if(activeCat === cat) activeCat = "Tout";
+      renderCatManageList();
       render();
       await saveAll();
     });
   });
 }
 
-document.getElementById('openManageCatsBtn').addEventListener('click', ()=>{
-  renderCatRows();
-  manageCatsOverlay.classList.add('show');
+document.getElementById('openManageCatBtn').addEventListener('click', ()=>{
+  renderCatManageList();
+  manageCatOverlay.classList.add('show');
 });
-document.getElementById('closeManageCatsBtn').addEventListener('click', ()=>{
-  manageCatsOverlay.classList.remove('show');
-});
+document.getElementById('closeManageCatBtn').addEventListener('click', ()=> manageCatOverlay.classList.remove('show'));
+
 document.getElementById('addCatBtn').addEventListener('click', async ()=>{
   const input = document.getElementById('newCatInput');
   const name = input.value.trim();
-  if(!name) return;
-  if(state.categories.includes(name)){ input.value=''; return; }
+  if(!name || state.categories.includes(name)) return;
   state.categories.push(name);
   input.value = '';
-  renderCatRows();
+  renderCatManageList();
   render();
   await saveAll();
 });
