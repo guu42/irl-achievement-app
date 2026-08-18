@@ -98,6 +98,10 @@ body{
 .badge-card.unlocked{ box-shadow: 0 3px 0 var(--rust), 0 6px 14px rgba(0,0,0,0.35); border: 2px dashed var(--rust); }
 
 .tier-tag{ position:absolute; top:8px; right:8px; font-family: var(--font-mono); font-size: 9px; letter-spacing:1px; text-transform:uppercase; padding: 2px 6px; border-radius: 3px; color: var(--white-ish); background: var(--teal); }
+.drag-handle{ position:absolute; top:6px; left:6px; font-size:14px; line-height:1; color: rgba(19,25,15,0.35); cursor:grab; touch-action:none; padding:5px 6px; z-index:3; user-select:none; -webkit-user-select:none; }
+.badge-card.locked .drag-handle{ color: rgba(246,241,228,0.35); }
+.badge-card.drag-origin{ opacity:0.3; }
+.drag-floating{ transition:none !important; }
 
 .patch-icon{ width: 46px; height: 46px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 22px; margin-bottom: 10px; background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass)); border: 2px solid var(--ink); position:relative; }
 .badge-card.locked .patch-icon{ background: rgba(0,0,0,0.15); border-color: rgba(0,0,0,0.2); }
@@ -572,6 +576,7 @@ function renderBadges(){
       const dateLine = b.unlockedDate ? `<div class="badge-date">${formatDate(b.unlockedDate)}</div>` : '';
       return `
         <div class="badge-card ${b.unlocked ? 'unlocked':'locked'}" data-id="${b.id}">
+          <div class="drag-handle" data-id="${b.id}">⋮⋮</div>
           <div class="patch-icon">${b.icon}${b.unlocked ? '<span class="check-overlay">✅</span>' : ''}</div>
           <div class="badge-name">${b.name}</div>
           <div class="badge-desc">${b.desc || ''}</div>
@@ -589,6 +594,7 @@ function renderBadges(){
       const overlay = hasTier ? `<span class="check-overlay">${tierIconHTML(level, 13)}</span>` : '';
       return `
         <div class="badge-card ${hasTier ? 'unlocked':'locked'}" data-id="${b.id}">
+          <div class="drag-handle" data-id="${b.id}">⋮⋮</div>
           <div class="tier-tag">${hasTier ? b.currentTier+'/'+b.tierCount : b.tierCount+' paliers'}</div>
           <div class="patch-icon">${b.icon}${overlay}</div>
           <div class="badge-name">${b.name}</div>
@@ -602,6 +608,7 @@ function renderBadges(){
   grid.querySelectorAll('.badge-card').forEach(card=>{
     card.addEventListener('click', ()=> openEditModal(card.dataset.id));
   });
+  attachDragHandlers();
 }
 
 function render(){ renderHeader(); renderCategories(); renderBadges(); }
@@ -838,6 +845,119 @@ document.getElementById('editDeleteBtn').addEventListener('click', async ()=>{
   await saveAll();
 });
 
+/* ---------- GLISSER-DÉPOSER (réorganisation) ---------- */
+let dragState = null;
+
+function attachDragHandlers(){
+  document.querySelectorAll('.drag-handle').forEach(handle=>{
+    handle.addEventListener('pointerdown', onDragHandlePointerDown);
+    handle.addEventListener('click', e => e.stopPropagation());
+  });
+}
+
+function onDragHandlePointerDown(e){
+  e.preventDefault();
+  e.stopPropagation();
+  const handle = e.currentTarget;
+  const card = handle.closest('.badge-card');
+  const rect = card.getBoundingClientRect();
+
+  const floating = card.cloneNode(true);
+  floating.classList.add('drag-floating');
+  floating.style.position = 'fixed';
+  floating.style.left = rect.left + 'px';
+  floating.style.top = rect.top + 'px';
+  floating.style.width = rect.width + 'px';
+  floating.style.height = rect.height + 'px';
+  floating.style.margin = '0';
+  floating.style.pointerEvents = 'none';
+  floating.style.zIndex = '500';
+  floating.style.transform = 'scale(1.05) rotate(-1deg)';
+  floating.style.boxShadow = '0 12px 24px rgba(0,0,0,0.5)';
+  document.body.appendChild(floating);
+
+  card.classList.add('drag-origin');
+
+  dragState = {
+    id: card.dataset.id,
+    card, floating,
+    offsetX: e.clientX - rect.left,
+    offsetY: e.clientY - rect.top,
+    pointerId: e.pointerId,
+  };
+
+  try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+  handle.addEventListener('pointermove', onDragPointerMove);
+  handle.addEventListener('pointerup', onDragPointerUp);
+  handle.addEventListener('pointercancel', onDragPointerUp);
+}
+
+function onDragPointerMove(e){
+  if(!dragState) return;
+  dragState.floating.style.left = (e.clientX - dragState.offsetX) + 'px';
+  dragState.floating.style.top = (e.clientY - dragState.offsetY) + 'px';
+}
+
+async function onDragPointerUp(e){
+  if(!dragState) return;
+  const handle = e.currentTarget;
+  handle.removeEventListener('pointermove', onDragPointerMove);
+  handle.removeEventListener('pointerup', onDragPointerUp);
+  handle.removeEventListener('pointercancel', onDragPointerUp);
+  try{ handle.releasePointerCapture(dragState.pointerId); }catch(err){}
+
+  const cards = Array.from(document.querySelectorAll('.badge-card')).filter(c => c !== dragState.card);
+  let closest = null; let minDist = Infinity;
+  cards.forEach(c=>{
+    const r = c.getBoundingClientRect();
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    const d = Math.hypot(e.clientX - cx, e.clientY - cy);
+    if(d < minDist){ minDist = d; closest = c; }
+  });
+
+  dragState.floating.remove();
+  dragState.card.classList.remove('drag-origin');
+
+  const draggedId = dragState.id;
+  dragState = null;
+
+  if(closest){
+    const targetId = closest.dataset.id;
+    if(draggedId !== targetId){
+      reorderBadge(draggedId, targetId);
+      render();
+      await saveAll();
+    }
+  }
+}
+
+function reorderBadge(draggedId, targetId){
+  const list = activeCat === "Tout" ? state.badges : state.badges.filter(b=>b.cat===activeCat);
+  let visibleIds = list.map(b=>b.id);
+  const fromIdx = visibleIds.indexOf(draggedId);
+  if(fromIdx === -1) return;
+  visibleIds.splice(fromIdx, 1);
+  const toIdx = visibleIds.indexOf(targetId);
+  if(toIdx === -1) return;
+  visibleIds.splice(toIdx, 0, draggedId);
+
+  const byId = {};
+  state.badges.forEach(b => { byId[b.id] = b; });
+  const vSet = new Set(visibleIds);
+  const queue = visibleIds.map(id => byId[id]);
+
+  let newBadges = [];
+  let inserted = false;
+  for(const b of state.badges){
+    if(vSet.has(b.id)){
+      if(!inserted){ newBadges.push(...queue); inserted = true; }
+    } else {
+      newBadges.push(b);
+    }
+  }
+  state.badges = newBadges;
+}
+
 /* ---------- GESTION DES CATÉGORIES ---------- */
 const manageCatOverlay = document.getElementById('manageCatOverlay');
 
@@ -846,10 +966,27 @@ function renderCatManageList(){
   list.innerHTML = state.categories.map(c => `
     <div class="cat-manage-row">
       <span>${c}</span>
+      <button class="rename-cat-btn" data-cat="${c}" title="Renommer">✏️</button>
       <button data-cat="${c}" title="Supprimer">🗑</button>
     </div>
   `).join('');
-  list.querySelectorAll('button').forEach(btn=>{
+  list.querySelectorAll('.rename-cat-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const oldName = btn.dataset.cat;
+      const input = prompt('Nouveau nom de la catégorie :', oldName);
+      if(input === null) return;
+      const newName = input.trim();
+      if(!newName || newName === oldName) return;
+      if(state.categories.includes(newName)){ alert('Cette catégorie existe déjà.'); return; }
+      state.categories = state.categories.map(c => c === oldName ? newName : c);
+      state.badges.forEach(b=>{ if(b.cat === oldName) b.cat = newName; });
+      if(activeCat === oldName) activeCat = newName;
+      renderCatManageList();
+      render();
+      await saveAll();
+    });
+  });
+  list.querySelectorAll('button:not(.rename-cat-btn)').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
       const cat = btn.dataset.cat;
       if(!confirm(`Supprimer la catégorie "${cat}" ? Les achievements concernés passeront dans "${FALLBACK_CAT}".`)) return;
