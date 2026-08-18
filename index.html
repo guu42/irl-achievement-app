@@ -6,6 +6,7 @@
 <title>Carnet d'Exploits</title>
 
 <!-- PWA -->
+<link rel="icon" href="icons/icon-192.png">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <meta name="theme-color" content="#1c2e24">
@@ -898,6 +899,26 @@ function onDragPointerMove(e){
   e.preventDefault();
   dragState.floating.style.left = (e.clientX - dragState.offsetX) + 'px';
   dragState.floating.style.top = (e.clientY - dragState.offsetY) + 'px';
+
+  // pointer-events:none sur le clone flottant permet à elementFromPoint
+  // de "voir à travers" et de trouver la vraie carte survolée en dessous
+  const elUnder = document.elementFromPoint(e.clientX, e.clientY);
+  const targetCard = elUnder ? elUnder.closest('.badge-card') : null;
+  if(!targetCard || targetCard === dragState.card || targetCard.classList.contains('drag-floating')) return;
+
+  const grid = document.getElementById('badgeGrid');
+  if(targetCard.parentElement !== grid) return;
+
+  const cards = Array.from(grid.children);
+  const originIdx = cards.indexOf(dragState.card);
+  const targetIdx = cards.indexOf(targetCard);
+  if(originIdx === -1 || targetIdx === -1) return;
+
+  if(originIdx < targetIdx){
+    grid.insertBefore(dragState.card, targetCard.nextSibling);
+  } else {
+    grid.insertBefore(dragState.card, targetCard);
+  }
 }
 
 async function onDragPointerUp(e){
@@ -907,45 +928,23 @@ async function onDragPointerUp(e){
   document.removeEventListener('pointercancel', onDragPointerUp);
   try{ dragState.handle.releasePointerCapture(dragState.pointerId); }catch(err){}
 
-  const cards = Array.from(document.querySelectorAll('.badge-card')).filter(c => c !== dragState.card);
-  let closest = null; let minDist = Infinity;
-  cards.forEach(c=>{
-    const r = c.getBoundingClientRect();
-    const cx = r.left + r.width/2, cy = r.top + r.height/2;
-    const d = Math.hypot(e.clientX - cx, e.clientY - cy);
-    if(d < minDist){ minDist = d; closest = c; }
-  });
+  const grid = document.getElementById('badgeGrid');
+  const finalVisibleIds = Array.from(grid.querySelectorAll('.badge-card')).map(c => c.dataset.id);
 
   dragState.floating.remove();
   dragState.card.classList.remove('drag-origin');
-
-  const draggedId = dragState.id;
   dragState = null;
 
-  if(closest){
-    const targetId = closest.dataset.id;
-    if(draggedId !== targetId){
-      reorderBadge(draggedId, targetId);
-      render();
-      await saveAll();
-    }
-  }
+  commitReorder(finalVisibleIds);
+  render();
+  await saveAll();
 }
 
-function reorderBadge(draggedId, targetId){
-  const list = activeCat === "Tout" ? state.badges : state.badges.filter(b=>b.cat===activeCat);
-  let visibleIds = list.map(b=>b.id);
-  const fromIdx = visibleIds.indexOf(draggedId);
-  if(fromIdx === -1) return;
-  visibleIds.splice(fromIdx, 1);
-  const toIdx = visibleIds.indexOf(targetId);
-  if(toIdx === -1) return;
-  visibleIds.splice(toIdx, 0, draggedId);
-
+function commitReorder(visibleIdsInNewOrder){
   const byId = {};
   state.badges.forEach(b => { byId[b.id] = b; });
-  const vSet = new Set(visibleIds);
-  const queue = visibleIds.map(id => byId[id]);
+  const vSet = new Set(visibleIdsInNewOrder);
+  const queue = visibleIdsInNewOrder.map(id => byId[id]).filter(Boolean);
 
   let newBadges = [];
   let inserted = false;
