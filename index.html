@@ -1104,10 +1104,33 @@ setupModalDismiss(editOverlay, 'editCancelBtn');
 setupModalDismiss(manageCatOverlay, 'closeManageCatBtn');
 
 document.addEventListener('keydown', (e)=>{
-  if(e.key !== 'Escape') return;
-  if(createOverlay.classList.contains('show')) document.getElementById('createCancelBtn').click();
-  else if(editOverlay.classList.contains('show')) document.getElementById('editCancelBtn').click();
-  else if(manageCatOverlay.classList.contains('show')) document.getElementById('closeManageCatBtn').click();
+  if(e.key === 'Escape'){
+    if(createOverlay.classList.contains('show')) document.getElementById('createCancelBtn').click();
+    else if(editOverlay.classList.contains('show')) document.getElementById('editCancelBtn').click();
+    else if(manageCatOverlay.classList.contains('show')) document.getElementById('closeManageCatBtn').click();
+    return;
+  }
+  if(e.key === 'Enter'){
+    // ne pas intercepter Entrée dans un champ multi-lignes
+    if(e.target && e.target.tagName === 'TEXTAREA') return;
+    if(createOverlay.classList.contains('show')){
+      e.preventDefault();
+      document.getElementById('createConfirmBtn').click();
+    } else if(editOverlay.classList.contains('show')){
+      e.preventDefault();
+      document.getElementById('editSaveBtn').click();
+    } else if(manageCatOverlay.classList.contains('show')){
+      e.preventDefault();
+      if(e.target && e.target.id === 'newCatInput'){
+        document.getElementById('addCatBtn').click();
+      } else {
+        document.getElementById('closeManageCatBtn').click();
+      }
+    } else if(authScreen.style.display !== 'none'){
+      e.preventDefault();
+      document.getElementById('authSubmitBtn').click();
+    }
+  }
 });
 
 /* ---------- Service worker ---------- */
