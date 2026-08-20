@@ -8,7 +8,6 @@
 <!-- PWA -->
 <link rel="icon" href="icons/icon-192.png">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon-192.png">
 <meta name="theme-color" content="#08080c">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -158,6 +157,23 @@ body{
 .tier-row .tier-icon{ font-size:20px; width:26px; text-align:center; flex-shrink:0; }
 .tier-row .tier-label{ flex:1; font-family: var(--font-body); font-size:13px; font-weight:600; color: var(--text); }
 .tier-row input[type="date"]{ width: 135px; }
+.date-with-clear{ display:flex; gap:8px; align-items:center; }
+.date-with-clear input[type="date"]{ flex:1; }
+.clear-date-btn, .tier-date-clear{
+  flex-shrink:0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 10px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+.clear-date-btn:hover, .tier-date-clear:hover{ border-color: var(--danger); color: var(--danger); }
+.tier-row-top .tier-date-clear{ padding: 6px 8px; font-size: 10px; }
 .tier-desc-input{ margin-top:6px; font-size: 12px !important; }
 
 .unique-unlock-row{ display:flex; align-items:center; gap:10px; margin-top:10px; }
@@ -303,7 +319,10 @@ body{
         <label for="eUnlockedCheck">Débloqué</label>
       </div>
       <label class="field-label">Date de déblocage (facultatif)</label>
-      <input type="date" id="eUnlockedDate">
+      <div class="date-with-clear">
+        <input type="date" id="eUnlockedDate">
+        <button type="button" class="clear-date-btn" id="eUnlockedDateClear">Effacer</button>
+      </div>
     </div>
 
     <div id="editTieredBlock" style="display:none;">
@@ -820,14 +839,25 @@ function openEditModal(id){
           <span class="tier-icon">${tierIconHTML(level, 20)}</span>
           <span class="tier-label">${level.name}</span>
           <input type="date" class="tier-date-input" data-idx="${i}" value="${b.tierDates[i] || ''}">
+          <button type="button" class="clear-date-btn tier-date-clear" data-idx="${i}">Effacer</button>
         </div>
         <input type="text" class="tier-desc-input" data-idx="${i}" placeholder="À quoi correspond ce palier ?" value="${(b.tierDescriptions && b.tierDescriptions[i]) || ''}">
       `;
       container.appendChild(row);
     }
+    container.querySelectorAll('.tier-date-clear').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const idx = btn.dataset.idx;
+        container.querySelector(`.tier-date-input[data-idx="${idx}"]`).value = '';
+      });
+    });
   }
   editOverlay.classList.add('show');
 }
+
+document.getElementById('eUnlockedDateClear').addEventListener('click', ()=>{
+  document.getElementById('eUnlockedDate').value = '';
+});
 
 document.getElementById('editCancelBtn').addEventListener('click', ()=>{
   editOverlay.classList.remove('show');
@@ -1059,6 +1089,25 @@ document.getElementById('addCatBtn').addEventListener('click', async ()=>{
   renderCatManageList();
   render();
   await saveAll();
+});
+
+/* ---------- FERMETURE DES POPUPS (clic en dehors / touche Échap) ---------- */
+function setupModalDismiss(overlay, dismissBtnId){
+  overlay.addEventListener('click', (e)=>{
+    if(e.target === overlay){
+      document.getElementById(dismissBtnId).click();
+    }
+  });
+}
+setupModalDismiss(createOverlay, 'createCancelBtn');
+setupModalDismiss(editOverlay, 'editCancelBtn');
+setupModalDismiss(manageCatOverlay, 'closeManageCatBtn');
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Escape') return;
+  if(createOverlay.classList.contains('show')) document.getElementById('createCancelBtn').click();
+  else if(editOverlay.classList.contains('show')) document.getElementById('editCancelBtn').click();
+  else if(manageCatOverlay.classList.contains('show')) document.getElementById('closeManageCatBtn').click();
 });
 
 /* ---------- Service worker ---------- */
